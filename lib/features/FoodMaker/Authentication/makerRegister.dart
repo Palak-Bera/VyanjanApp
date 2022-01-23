@@ -1,19 +1,19 @@
+
 import 'package:flutter/material.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-
-/// Login Page for [Food Maker]
-class MakerLogin extends StatefulWidget {
-  MakerLogin({Key? key}) : super(key: key);
+/// Register Page for [Food Maker]
+class MakerRegister extends StatefulWidget {
+  MakerRegister({Key? key}) : super(key: key);
 
   @override
-  _MakerLoginState createState() => _MakerLoginState();
+  _MakerRegisterState createState() => _MakerRegisterState();
 }
 
-class _MakerLoginState extends State<MakerLogin> {
+class _MakerRegisterState extends State<MakerRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +35,7 @@ class _MakerLoginState extends State<MakerLogin> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: 'Login as Food Maker',
+                      text: 'Register as Food Maker',
                       fontSize: 18.0,
                     ),
                     height10,
@@ -57,9 +57,24 @@ class _MakerLoginState extends State<MakerLogin> {
                     /// [Register Now Button]
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      child: CustomButton(text: 'Login Now', onpressed: () {}),
+                      child:
+                          CustomButton(text: 'Register Now', onpressed: () {}),
                     ),
-                    height20,
+                    height10,
+                    Row(
+                      children: [
+                        CustomText(text: 'Already registered?  '),
+
+                        /// [Login text link]
+                        InkWell(
+                          onTap: () {},
+                          child: CustomText(
+                            text: 'Login Now',
+                            color: primaryGreen,
+                          ),
+                        )
+                      ],
+                    ),
                     Row(
                       children: [
                         Expanded(child: Divider()),
