@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodSeeker/Home/widgets/itemCard.dart';
 import 'package:food_app/fixtures/dummy_data.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
@@ -26,7 +27,11 @@ class _SearchFoodState extends State<SearchFood> {
               Row(
                 children: [
                   /// [City and Country text]
-                  Icon(Icons.location_on, color: primaryGreen,size: 30,),
+                  Icon(
+                    Icons.location_on,
+                    color: primaryGreen,
+                    size: 30,
+                  ),
                   Expanded(
                     child: ListTile(
                       title: Text('Anand'),
@@ -36,6 +41,7 @@ class _SearchFoodState extends State<SearchFood> {
                       ),
                     ),
                   ),
+
                   /// [Username]
                   Expanded(
                     child: Row(
@@ -52,9 +58,14 @@ class _SearchFoodState extends State<SearchFood> {
                           ],
                         ),
                         width10,
-                        CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/person.jpeg'),
-     
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, userDetailRoute);
+                          },
+                          child: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/person.jpeg'),
+                          ),
                         ),
                       ],
                     ),
@@ -65,6 +76,9 @@ class _SearchFoodState extends State<SearchFood> {
               /// [Search option for Food items]
               TextFormField(
                 onChanged: (value) {},
+                onFieldSubmitted: (value) {
+                  Navigator.pushNamed(context, availableFoodMakerRoute);
+                },
                 decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,
@@ -125,7 +139,8 @@ class _SearchFoodState extends State<SearchFood> {
                               ),
                             ),
                             height10,
-                            CustomText(text: categoryList.elementAt(index)['name']!),
+                            CustomText(
+                                text: categoryList.elementAt(index)['name']!),
                             height10,
                           ],
                         ),

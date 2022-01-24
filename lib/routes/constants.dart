@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 const String intialRoute = '/';
 
 /// Routes for [Food Seeker]
@@ -15,6 +17,8 @@ const String restaurantDetailRoute = '/RestaurantDetails';
 const String restaurantContactRoute = '/RestaurantContact';
 const String restaurantOwnerRoute = '/OwnerDetails';
 
-
 /// Routes for [Common Screen]
 const String otpRoute = '/OTPVerification';
+
+CollectionReference makerRef =
+    FirebaseFirestore.instance.collection('foodMaker');

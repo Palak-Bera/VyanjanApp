@@ -38,7 +38,7 @@ class Routes {
         return MaterialPageRoute(builder: (_) => AvailableItem());
 
       case userCartRoute:
-        return MaterialPageRoute(builder: (_) => UserCart());
+        return MaterialPageRoute(builder: (_) => UserCart()); //left
 
       case userDetailRoute:
         return MaterialPageRoute(builder: (_) => UserDetails());

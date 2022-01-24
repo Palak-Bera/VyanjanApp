@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -49,7 +50,8 @@ class _SeekerDetailsState extends State<SeekerDetails> {
               /// [Mobile number field]
               InternationalPhoneNumberInput(
                 onInputChanged: (value) {},
-                inputBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+                inputBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
                 keyboardType: TextInputType.phone,
                 selectorConfig: SelectorConfig(
                   selectorType: PhoneInputSelectorType.DROPDOWN,
@@ -75,7 +77,8 @@ class _SeekerDetailsState extends State<SeekerDetails> {
                       onTap: () {},
                       child: Text(
                         'VERIFY',
-                        style: TextStyle(color: primaryGreen, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: primaryGreen, fontWeight: FontWeight.bold),
                       ),
                     )),
                 cursorColor: primaryGreen,
@@ -125,8 +128,14 @@ class _SeekerDetailsState extends State<SeekerDetails> {
               ),
               height20,
               Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: CustomButton(text: 'Continue', onpressed: () {}))
+                width: MediaQuery.of(context).size.width,
+                child: CustomButton(
+                    text: 'Continue',
+                    onpressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, searchFoodRoute, (route) => false);
+                    }),
+              )
             ],
           ),
         ),

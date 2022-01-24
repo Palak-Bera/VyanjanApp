@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/features/FoodMaker/Authentication/MakerOtp.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
@@ -13,6 +14,10 @@ class MakerLogin extends StatefulWidget {
 }
 
 class _MakerLoginState extends State<MakerLogin> {
+  TextEditingController phoneController = TextEditingController();
+  String phoneNo = '';
+  final GlobalKey<FormState> _phoneNoKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,15 +45,38 @@ class _MakerLoginState extends State<MakerLogin> {
                     height10,
 
                     /// [Phone number input field]
-                    InternationalPhoneNumberInput(
-                      onInputChanged: (value) {},
-                      inputBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      keyboardType: TextInputType.phone,
-                      selectorConfig: SelectorConfig(
-                        selectorType: PhoneInputSelectorType.DROPDOWN,
-                        showFlags: true,
-                        setSelectorButtonAsPrefixIcon: false,
+                    Form(
+                      key: _phoneNoKey,
+                      child: InternationalPhoneNumberInput(
+                        ignoreBlank: true,
+                        textFieldController: phoneController,
+                        maxLength: 12,
+                        onInputChanged: (value) {
+                          setState(() {
+                            phoneNo = value.toString();
+                          });
+                        },
+                        validator: (phone) {
+                          print(phoneController.value.text.replaceAll(' ', ''));
+                          if (phoneController.value.text.isEmpty ||
+                              phoneController.value.text
+                                      .replaceAll(' ', '')
+                                      .length <
+                                  10) {
+                            return 'Invalid Phone Number';
+                          } else {
+                            return null;
+                          }
+                        },
+                        inputBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.DIALOG,
+                          showFlags: true,
+                          setSelectorButtonAsPrefixIcon: false,
+                        ),
                       ),
                     ),
                     height20,
@@ -56,8 +84,17 @@ class _MakerLoginState extends State<MakerLogin> {
                     /// [Register Now Button]
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      child:
-                          CustomButton(text: 'Register Now', onpressed: () {}),
+                      child: CustomButton(
+                          text: 'Register Now',
+                          onpressed: () {
+                            if (_phoneNoKey.currentState!.validate()) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MakerOtp(phoneNo),
+                                  ));
+                            }
+                          }),
                     ),
                     height10,
                     Row(

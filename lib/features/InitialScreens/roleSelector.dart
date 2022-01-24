@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
-import 'package:food_app/widgets/dividers.dart';
+import 'package:food_app/routes/routes.dart';
+
+import '../../routes/constants.dart';
+import '../../routes/constants.dart';
 
 class RoleSelector extends StatefulWidget {
   RoleSelector({Key? key}) : super(key: key);
@@ -12,8 +15,7 @@ class RoleSelector extends StatefulWidget {
 }
 
 class _RoleSelectorState extends State<RoleSelector> {
-  
-  
+  String role = '';
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,8 @@ class _RoleSelectorState extends State<RoleSelector> {
       appBar: AppBar(
         backgroundColor: white,
         elevation: 0.0,
-      /// No need of [back button] in [Role Selector]
+
+        /// No need of [back button] in [Role Selector]
         // leading: backButton(() {
         //   Navigator.pop(context);
         // }),
@@ -60,34 +63,59 @@ class _RoleSelectorState extends State<RoleSelector> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   OutlinedButton(
-                      onPressed: () {
-                       /// route For [Food Seeker Login] page
+                    onPressed: () {
+                      /// route For [Food Seeker Login] page
                       //  Navigator.pushNamed(context, foodSeekerRoute);
-                      },
-                      child: CustomText(
-                        text: 'Food Seeker',
-                        color: primaryBlack,
-                      ),),
+                      setState(() {
+                        role = 'Seeker';
+                      });
+                    },
+                    child: CustomText(
+                      text: 'Food Seeker',
+                      color: primaryBlack,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                          color: role == 'Seeker'
+                              ? primaryGreen
+                              : Colors.grey.shade400),
+                    ),
+                  ),
                   CustomText(
                     text: 'OR',
                     color: primaryBlack,
                     fontWeight: FontWeight.bold,
                   ),
                   OutlinedButton(
-                      onPressed: () {
-                        /// route For [Food Maker Login] page
-                        // Navigator.pushNamed(context, foodMakerRoute);
-                      },
-                      child: CustomText(
-                        text: 'Food Maker',
-                        color: primaryBlack,
-                      ),)
+                    onPressed: () {
+                      /// route For [Food Maker Login] page
+                      // Navigator.pushNamed(context, foodMakerRoute);
+                      setState(() {
+                        role = 'Maker';
+                      });
+                    },
+                    child: CustomText(
+                      text: 'Food Maker',
+                      color: primaryBlack,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                          color: role == 'Maker'
+                              ? primaryGreen
+                              : Colors.grey.shade400),
+                    ),
+                  )
                 ],
               ),
             ),
+
             /// [Continue Button]
             MaterialButton(
-              onPressed: () {},
+              onPressed: () {
+                role.contains('Seeker')
+                    ? Navigator.pushNamed(context, foodSeekerRoute)
+                    : Navigator.pushNamed(context, foodMakerRoute);
+              },
               color: primaryGreen,
               child: CustomText(
                 text: 'Continue',

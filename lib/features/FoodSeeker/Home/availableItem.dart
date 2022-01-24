@@ -24,8 +24,11 @@ class _AvailableItemState extends State<AvailableItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: CustomAppbar(
-        onBackPressed: () {},
+      appBar: AppBar(
+        backwardsCompatibility: true,
+        iconTheme: IconThemeData(color: primaryGreen),
+        elevation: 0.0,
+        backgroundColor: white,
       ),
       body: Column(
         children: [
@@ -175,16 +178,18 @@ class _AvailableItemState extends State<AvailableItem> {
           isScrollControlled: true,
           builder: (context) {
             return Container(
-                height: screenHeight / 1.25,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        children: [
-                          Image.asset(makerList[index]["imgpath"]),
-                          Center(
-                              child: Padding(
+              height: screenHeight / 1.25,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        Image.asset(
+                          makerList[index]["imgpath"],
+                        ),
+                        Center(
+                          child: Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: InkWell(
                               onTap: () {
@@ -202,166 +207,170 @@ class _AvailableItemState extends State<AvailableItem> {
                                 ),
                               ),
                             ),
-                          )),
-                        ],
-                      ),
-                      height20,
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text: makerList[index]["name"],
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            Divider(),
-                            CustomText(
-                              text: "Select Size",
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(text: "Medium"),
-                                Row(
-                                  children: [
-                                    CustomText(text: "Rs. 110"),
-                                    Radio(
-                                      value: 'medium',
-                                      groupValue: selectsize,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          selectsize = val.toString();
-                                          print(selectsize);
-                                        });
-                                      },
-                                      activeColor: primaryGreen,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(text: "Large"),
-                                Row(
-                                  children: [
-                                    CustomText(text: "Rs. 140"),
-                                    Radio(
-                                      value: 'large',
-                                      groupValue: selectsize,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          selectsize = val.toString();
-                                          print(selectsize);
-                                        });
-                                      },
-                                      activeColor: primaryGreen,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Divider(),
-                            CustomText(
-                              text: "Extra",
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(text: "Cheese"),
-                                Row(
-                                  children: [
-                                    CustomText(text: "Rs. 45"),
-                                    Checkbox(
-                                      value: extracheese,
-                                      checkColor: white,
-                                      activeColor: primaryGreen,
-                                      onChanged: (val) {
-                                        extracheese == true
-                                            ? extracheese = false
-                                            : extracheese = true;
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Divider(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                    width: 1.0,
-                                    color: primaryGreen,
-                                    // style:
-                                  )),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    child: Row(
-                                      children: [
-                                        InkWell(
-                                          child: Icon(
-                                            Icons.remove,
-                                            color: primaryGreen,
-                                          ),
-                                          onTap: () {
-                                            setState(() {
-                                              (cartIteam <= 1)
-                                                  ? cartIteam = 1
-                                                  : cartIteam--;
-                                            });
-                                          },
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        CustomText(
-                                          text: "$cartIteam",
+                          ),
+                        ),
+                      ],
+                    ),
+                    height20,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: makerList[index]["name"],
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          Divider(),
+                          CustomText(
+                            text: "Select Size",
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(text: "Medium"),
+                              Row(
+                                children: [
+                                  CustomText(text: "Rs. 110"),
+                                  Radio(
+                                    value: 'medium',
+                                    groupValue: selectsize,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectsize = val.toString();
+                                        print(selectsize);
+                                      });
+                                    },
+                                    activeColor: primaryGreen,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(text: "Large"),
+                              Row(
+                                children: [
+                                  CustomText(text: "Rs. 140"),
+                                  Radio(
+                                    value: 'large',
+                                    groupValue: selectsize,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectsize = val.toString();
+                                        print(selectsize);
+                                      });
+                                    },
+                                    activeColor: primaryGreen,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(),
+                          CustomText(
+                            text: "Extra",
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(text: "Cheese"),
+                              Row(
+                                children: [
+                                  CustomText(text: "Rs. 45"),
+                                  Checkbox(
+                                    value: extracheese,
+                                    checkColor: white,
+                                    activeColor: primaryGreen,
+                                    onChanged: (val) {
+                                      extracheese == true
+                                          ? extracheese = false
+                                          : extracheese = true;
+                                    },
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                  width: 1.0,
+                                  color: primaryGreen,
+                                  // style:
+                                )),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        child: Icon(
+                                          Icons.remove,
                                           color: primaryGreen,
-                                          fontSize: 20,
                                         ),
-                                        SizedBox(
-                                          width: 10,
+                                        onTap: () {
+                                          setState(() {
+                                            (cartIteam <= 1)
+                                                ? cartIteam = 1
+                                                : cartIteam--;
+                                          });
+                                        },
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      CustomText(
+                                        text: "$cartIteam",
+                                        color: primaryGreen,
+                                        fontSize: 20,
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      InkWell(
+                                        child: Icon(
+                                          Icons.add,
+                                          color: primaryGreen,
                                         ),
-                                        InkWell(
-                                          child: Icon(
-                                            Icons.add,
-                                            color: primaryGreen,
-                                          ),
-                                          onTap: () {
-                                            setState(() {
-                                              cartIteam++;
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                        onTap: () {
+                                          setState(() {
+                                            cartIteam++;
+                                          });
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Container(
-                                  width: screenWidth / 2,
-                                  child: CustomButton(
-                                      text: "Add Item for Rs. 110",
-                                      onpressed: () {}),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ));
+                              ),
+                              Container(
+                                width: screenWidth / 2,
+                                child: CustomButton(
+                                    text: "Add Item for Rs. 110",
+                                    onpressed: () {
+                                      Navigator.pop(context);
+                                    }),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
           });
     }
 

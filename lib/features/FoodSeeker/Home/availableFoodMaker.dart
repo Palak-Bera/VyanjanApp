@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodSeeker/Home/widgets/itemCard.dart';
 import 'package:food_app/fixtures/dummy_data.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
@@ -31,14 +32,16 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
               TextFormField(
                 onChanged: (value) {},
                 decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: primaryGreen,
-                    ),
-                    hintText: 'Available Food Makers',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: grey))),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: primaryGreen,
+                  ),
+                  hintText: 'Available Food Makers',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: grey),
+                  ),
+                ),
                 keyboardType: TextInputType.text,
                 cursorColor: primaryGreen,
               ),
@@ -80,12 +83,17 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
               ),
 
               Expanded(
-                child: ListView.builder(
-                  itemBuilder: _buildFoodMakerCard,
-                  itemCount: makerList.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  // physics: ClampingScrollPhysics(),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, availableItemRoute);
+                  },
+                  child: ListView.builder(
+                    itemBuilder: _buildFoodMakerCard,
+                    itemCount: makerList.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    // physics: ClampingScrollPhysics(),
+                  ),
                 ),
               )
             ],
@@ -97,9 +105,10 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
 
   Widget _buildFoodMakerCard(BuildContext context, int index) {
     return Padding(
-      padding: const EdgeInsets.only(top :15),
+      padding: const EdgeInsets.only(top: 15),
       child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
               ClipRect(
@@ -126,7 +135,7 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
                               ? Row(
                                   children: [
                                     Icon(
-                                      Icons.circle_rounded,
+                                      Icons.circle,
                                       color: primaryGreen,
                                       size: 12,
                                     ),
@@ -140,7 +149,7 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
                               : Row(
                                   children: [
                                     Icon(
-                                      Icons.circle_rounded,
+                                      Icons.circle,
                                       color: grey,
                                       size: 10,
                                     ),
@@ -160,7 +169,7 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
                             color: primaryGreen,
                             fontSize: 15,
                           ),
-                            Icon(
+                          Icon(
                             Icons.star,
                             color: primaryGreen,
                             size: 18,
