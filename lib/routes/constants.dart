@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 const String intialRoute = '/';
 
@@ -13,7 +14,7 @@ const String userDetailRoute = '/UserDetails';
 
 /// Routes for [Food Maker]
 const String foodMakerRoute = '/MakerLogin';
-const String restaurantDetailRoute = '/RestaurantDetails';
+const String makerDetailRoute = '/MakerDetails';
 const String restaurantContactRoute = '/RestaurantContact';
 const String restaurantOwnerRoute = '/OwnerDetails';
 
@@ -22,3 +23,8 @@ const String otpRoute = '/OTPVerification';
 
 CollectionReference makerRef =
     FirebaseFirestore.instance.collection('foodMaker');
+
+FirebaseAuth auth = FirebaseAuth.instance;
+
+/// Google Map API Key
+const String googleMapAPI = "AIzaSyArajhZ05FjwR23zouneFC-6q-ZB5zaV10";

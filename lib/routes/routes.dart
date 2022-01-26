@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerLogin.dart';
 import 'package:food_app/features/FoodMaker/Authentication/ownerDetails.dart';
 import 'package:food_app/features/FoodMaker/Authentication/restaurantContact.dart';
-import 'package:food_app/features/FoodMaker/Authentication/restaurantDetails.dart';
+import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableFoodMaker.dart';
@@ -46,8 +46,8 @@ class Routes {
       case foodMakerRoute:
         return MaterialPageRoute(builder: (_) => MakerLogin());
 
-      case restaurantDetailRoute:
-        return MaterialPageRoute(builder: (_) => RestaurantDetails());
+      case makerDetailRoute:
+        return MaterialPageRoute(builder: (_) => MakerDetails());
 
       case restaurantContactRoute:
         return MaterialPageRoute(builder: (_) => RestaurantContact());

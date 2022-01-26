@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/features/FoodMaker/Authentication/MakerOtp.dart';
+import 'package:food_app/features/FoodMaker/Authentication/makerOtp.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
@@ -52,9 +52,7 @@ class _MakerLoginState extends State<MakerLogin> {
                         textFieldController: phoneController,
                         maxLength: 12,
                         onInputChanged: (value) {
-                          setState(() {
-                            phoneNo = value.toString();
-                          });
+                          phoneNo = value.toString();
                         },
                         validator: (phone) {
                           print(phoneController.value.text.replaceAll(' ', ''));

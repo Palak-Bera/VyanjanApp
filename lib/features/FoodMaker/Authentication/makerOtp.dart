@@ -78,15 +78,15 @@ class _MakerOtpState extends State<MakerOtp> {
                           verificationId: _verificationCode, smsCode: otp))
                       .then((value) async {
                     if (value.user != null) {
-                      print('before adding to database');
                       makerRef.doc(widget.phone).set({
                         'phoneNo': widget.phone,
                         'name': '',
                         'address': '',
                         'pincode': ''
-                      });
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, restaurantDetailRoute, (route) => false);
+                      }).then((value) => {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, makerDetailRoute, (route) => false)
+                          });
                     }
                   });
                 } catch (e) {
@@ -119,7 +119,7 @@ class _MakerOtpState extends State<MakerOtp> {
             .then((value) async {
           if (value.user != null) {
             Navigator.pushNamedAndRemoveUntil(
-                context, restaurantDetailRoute, (route) => false);
+                context, makerDetailRoute, (route) => false);
           }
         });
       },
