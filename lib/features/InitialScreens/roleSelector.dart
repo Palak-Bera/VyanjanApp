@@ -112,9 +112,10 @@ class _RoleSelectorState extends State<RoleSelector> {
             /// [Continue Button]
             MaterialButton(
               onPressed: () {
-                role.contains('Seeker')
-                    ? Navigator.pushNamed(context, foodSeekerRoute)
-                    : Navigator.pushNamed(context, foodMakerRoute);
+                if (role == 'Seeker')
+                  Navigator.pushNamed(context, foodSeekerRoute);
+                else if (role == 'Maker')
+                  Navigator.pushNamed(context, foodMakerRoute);
               },
               color: primaryGreen,
               child: CustomText(

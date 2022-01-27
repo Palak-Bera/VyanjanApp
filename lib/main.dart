@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerLogin.dart';
-import 'package:food_app/features/FoodMaker/Authentication/ownerDetails.dart';
-import 'package:food_app/features/FoodMaker/Authentication/restaurantContact.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
+import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableFoodMaker.dart';
@@ -31,7 +29,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MakerDetails(),
+      home: SplashScreen(),
       routes: {
         foodSeekerRoute: (context) => SeekerLogin(),
         seekerDetailRoute: (context) => SeekerDetails(),
@@ -42,6 +40,7 @@ class App extends StatelessWidget {
         userCartRoute: (context) => UserCart(),
         foodMakerRoute: (context) => MakerLogin(),
         makerDetailRoute: (context) => MakerDetails(),
+        makerRecipesRoute: (context) => MakerRecipe(),
       },
     );
   }

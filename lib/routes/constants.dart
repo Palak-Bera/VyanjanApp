@@ -17,6 +17,7 @@ const String foodMakerRoute = '/MakerLogin';
 const String makerDetailRoute = '/MakerDetails';
 const String restaurantContactRoute = '/RestaurantContact';
 const String restaurantOwnerRoute = '/OwnerDetails';
+const String makerRecipesRoute = '/MakerRecipe';
 
 /// Routes for [Common Screen]
 const String otpRoute = '/OTPVerification';

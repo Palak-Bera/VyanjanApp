@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/features/FoodMaker/Authentication/makerOtp.dart';
+import 'package:food_app/features/CommonScreens/otp_verification.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
@@ -49,6 +49,8 @@ class _MakerLoginState extends State<MakerLogin> {
                       key: _phoneNoKey,
                       child: InternationalPhoneNumberInput(
                         ignoreBlank: true,
+                        initialValue: PhoneNumber(
+                            isoCode: 'IN', phoneNumber: '', dialCode: '+91'),
                         textFieldController: phoneController,
                         maxLength: 12,
                         onInputChanged: (value) {
@@ -89,7 +91,8 @@ class _MakerLoginState extends State<MakerLogin> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MakerOtp(phoneNo),
+                                    builder: (context) =>
+                                        OTPVerification(phoneNo),
                                   ));
                             }
                           }),

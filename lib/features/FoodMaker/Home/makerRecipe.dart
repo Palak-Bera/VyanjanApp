@@ -4,18 +4,15 @@ import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
 /// Screen for [Recipe] details for food maker
-class Recipe extends StatefulWidget {
-  const Recipe({Key? key}) : super(key: key);
-
+class MakerRecipe extends StatefulWidget {
+  const MakerRecipe({Key? key}) : super(key: key);
 
   @override
-  _AvailableItemState createState() => _AvailableItemState();
+  _MakerRecipeState createState() => _MakerRecipeState();
 }
 
-class _AvailableItemState extends State<Recipe> {
-
-
- static const foodItems = [
+class _MakerRecipeState extends State<MakerRecipe> {
+  static const foodItems = [
     "item 1",
     "item 2",
     "item 3",
@@ -101,7 +98,7 @@ class _AvailableItemState extends State<Recipe> {
                 itemBuilder: (BuildContext context, index) {
                   return ListTile(
                       title: CustomText(
-                        color: grey,
+                    color: grey,
                     text: "${foodItems[index]}",
                   ));
                 },

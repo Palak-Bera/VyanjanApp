@@ -81,8 +81,7 @@ class _MakerOtpState extends State<MakerOtp> {
                       makerRef.doc(widget.phone).set({
                         'phoneNo': widget.phone,
                         'name': '',
-                        'address': '',
-                        'pincode': ''
+                        'address': ''
                       }).then((value) => {
                             Navigator.pushNamedAndRemoveUntil(
                                 context, makerDetailRoute, (route) => false)

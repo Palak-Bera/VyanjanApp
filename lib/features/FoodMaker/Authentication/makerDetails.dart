@@ -8,21 +8,34 @@ import 'package:location/location.dart';
 import 'package:food_app/features/CommonScreens/googleMapScreen.dart' as map;
 
 /// Screen for taking [Restaurant details]
-class MakerDetails extends StatefulWidget {
-  const MakerDetails({Key? key}) : super(key: key);
 
+String finalAddress = '';
+
+class MakerDetails extends StatefulWidget {
   @override
   _MakerDetailsState createState() => _MakerDetailsState();
 }
 
 class _MakerDetailsState extends State<MakerDetails> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneNoController = TextEditingController();
   TextEditingController _buildingController = TextEditingController();
   TextEditingController _landmarkController = TextEditingController();
+  TextEditingController _cityController = TextEditingController();
+  TextEditingController _stateController = TextEditingController();
   TextEditingController _pincodeController = TextEditingController();
 
-  String alternatePhoneNo = '';
+  String makerName = '';
+  String phoneNo = '';
+  String _alternatePhoneNo = '';
+  String address = '';
+
+  @override
+  void reassemble() {
+    super.reassemble();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +49,7 @@ class _MakerDetailsState extends State<MakerDetails> {
         child: Padding(
           padding: const EdgeInsets.only(left: 20.0, right: 20.0),
           child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -52,6 +66,12 @@ class _MakerDetailsState extends State<MakerDetails> {
                 /// [Name input field]
                 TextFormField(
                   controller: _nameController,
+                  validator: (value) {
+                    if (value!.isEmpty || value == null)
+                      return 'Please Enter your Name';
+                    else
+                      return null;
+                  },
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
                     hintText: 'Food Maker name *',
@@ -66,10 +86,23 @@ class _MakerDetailsState extends State<MakerDetails> {
                 height10,
                 InternationalPhoneNumberInput(
                   textFieldController: _phoneNoController,
+                  initialValue: PhoneNumber(
+                      dialCode: '+91', phoneNumber: '', isoCode: 'IN'),
+                  validator: (value) {
+                    if (_phoneNoController.value.text.isEmpty ||
+                        _phoneNoController.value.text
+                                .replaceAll(' ', '')
+                                .length <
+                            10) {
+                      return 'Invalid Phone Number';
+                    } else {
+                      return null;
+                    }
+                  },
                   maxLength: 12,
                   ignoreBlank: true,
                   onInputChanged: (value) {
-                    alternatePhoneNo = value.toString();
+                    _alternatePhoneNo = value.toString();
                   },
                   inputBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0)),
@@ -92,6 +125,12 @@ class _MakerDetailsState extends State<MakerDetails> {
                 TextFormField(
                   controller: _buildingController,
                   textCapitalization: TextCapitalization.words,
+                  validator: (value) {
+                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                      return 'Please Enter your Building Name';
+                    else
+                      return null;
+                  },
                   decoration: InputDecoration(
                     hintText: 'Floor/Building',
                   ),
@@ -100,50 +139,100 @@ class _MakerDetailsState extends State<MakerDetails> {
                 TextFormField(
                   controller: _landmarkController,
                   textCapitalization: TextCapitalization.words,
+                  validator: (value) {
+                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                      return 'Please Enter Landmark';
+                    else
+                      return null;
+                  },
                   decoration: InputDecoration(
                     hintText: 'Landmark',
                   ),
                   cursorColor: primaryGreen,
                 ),
                 TextFormField(
-                  controller: _pincodeController,
+                  controller: _cityController,
                   textCapitalization: TextCapitalization.words,
+                  validator: (value) {
+                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                      return 'Please Enter your City';
+                    else
+                      return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'City',
+                  ),
+                  cursorColor: primaryGreen,
+                ),
+                TextFormField(
+                  controller: _stateController,
+                  textCapitalization: TextCapitalization.words,
+                  validator: (value) {
+                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                      return 'Please Enter your State';
+                    else
+                      return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'State',
+                  ),
+                  cursorColor: primaryGreen,
+                ),
+                TextFormField(
+                  controller: _pincodeController,
+                  maxLength: 6,
+                  textCapitalization: TextCapitalization.words,
+                  validator: (value) {
+                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                      return 'Please Enter your Pincode';
+                    else
+                      return null;
+                  },
                   decoration: InputDecoration(
                     hintText: 'Pincode',
                   ),
                   keyboardType: TextInputType.number,
                   cursorColor: primaryGreen,
                 ),
-                height40,
+                height20,
 
                 /// [Map location section]
                 /// To intigrate Google maps for fetching location,
                 /// You need to purchase API key from GCP
                 /// Or You can also use any other Geolocation APIs available
-                CustomText(
-                  text: 'Select a location *',
-                ),
-                height10,
-                TextFormField(
-                  onChanged: (value) {},
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: primaryGreen,
-                    ),
-                    hintText: 'Select location',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: grey),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  cursorColor: primaryGreen,
-                ),
-                height10,
 
                 /// [Option to choose current location directly]
                 /// For this you need to first enable the permissions on mobile for accessing location of device
+
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: new Container(
+                        margin: const EdgeInsets.only(left: 10.0, right: 15.0),
+                        child: Divider(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "OR",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17.0,
+                          color: primaryGreen),
+                    ),
+                    Expanded(
+                      child: new Container(
+                        margin: const EdgeInsets.only(left: 15.0, right: 10.0),
+                        child: Divider(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                height20,
+
                 ListTile(
                   onTap: () {
                     getLocation();
@@ -158,7 +247,7 @@ class _MakerDetailsState extends State<MakerDetails> {
                       color: primaryGreen,
                     ),
                   ),
-                  subtitle: Text('Restaurant name, Address'),
+                  subtitle: Text(finalAddress == '' ? 'Address' : finalAddress),
                   trailing: Icon(
                     Icons.arrow_forward_ios,
                     color: primaryGreen,
@@ -172,16 +261,26 @@ class _MakerDetailsState extends State<MakerDetails> {
                   child: CustomButton(
                       text: 'Continue',
                       onpressed: () {
-                        makerRef.doc(auth.currentUser!.phoneNumber).update({
-                          'name': _nameController.value.text,
-                          'alternatePhoneNo': alternatePhoneNo,
-                          'floor/building': _buildingController.value.text,
-                          'landmark': _landmarkController.value.text,
-                          'pincode': _pincodeController.value.text,
-                        }).then((value) => {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, makerDetailRoute, (route) => false)
-                            });
+                        if (_formKey.currentState!.validate()) {
+                          makerRef.doc(auth.currentUser!.phoneNumber).update({
+                            'name': _nameController.value.text,
+                            'alternatePhoneNo': _alternatePhoneNo,
+                            'address': finalAddress == ''
+                                ? _buildingController.value.text +
+                                    ' ' +
+                                    _landmarkController.value.text +
+                                    ' ' +
+                                    _cityController.value.text +
+                                    ' ' +
+                                    _stateController.value.text +
+                                    ' ' +
+                                    _pincodeController.value.text
+                                : finalAddress
+                          }).then((value) => {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    makerRecipesRoute, (route) => false)
+                              });
+                        }
                       }),
                 ),
                 height20,
@@ -217,12 +316,18 @@ class _MakerDetailsState extends State<MakerDetails> {
     }
 
     _locationData = await location.getLocation();
-
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => map.GoogleMapScreen(
-              _locationData.latitude!, _locationData.longitude!),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => map.GoogleMapScreen(
+          lat: _locationData.latitude!,
+          long: _locationData.longitude!,
+          callback: (value) {
+            finalAddress = value;
+            setState(() {});
+          },
+        ),
+      ),
+    );
   }
 }
