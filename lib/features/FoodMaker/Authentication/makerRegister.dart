@@ -1,11 +1,13 @@
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:food_app/features/CommonScreens/otp_verification.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-/// Register Page for [Food Maker]
+/// Login Page for [Food Maker]
 class MakerRegister extends StatefulWidget {
   MakerRegister({Key? key}) : super(key: key);
 
@@ -14,6 +16,17 @@ class MakerRegister extends StatefulWidget {
 }
 
 class _MakerRegisterState extends State<MakerRegister> {
+  TextEditingController phoneController = TextEditingController();
+  final GlobalKey<FormState> _phoneNoKey = GlobalKey<FormState>();
+
+  String phoneNo = '';
+  bool isUser = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,15 +54,38 @@ class _MakerRegisterState extends State<MakerRegister> {
                     height10,
 
                     /// [Phone number input field]
-                    InternationalPhoneNumberInput(
-                      onInputChanged: (value) {},
-                      inputBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      keyboardType: TextInputType.phone,
-                      selectorConfig: SelectorConfig(
-                        selectorType: PhoneInputSelectorType.DROPDOWN,
-                        showFlags: true,
-                        setSelectorButtonAsPrefixIcon: false,
+                    Form(
+                      key: _phoneNoKey,
+                      child: InternationalPhoneNumberInput(
+                        ignoreBlank: true,
+                        initialValue: PhoneNumber(
+                            isoCode: 'IN', phoneNumber: '', dialCode: '+91'),
+                        textFieldController: phoneController,
+                        maxLength: 12,
+                        onInputChanged: (value) {
+                          phoneNo = value.toString();
+                        },
+                        validator: (phone) {
+                          print(phoneController.value.text.replaceAll(' ', ''));
+                          if (phoneController.value.text.isEmpty ||
+                              phoneController.value.text
+                                      .replaceAll(' ', '')
+                                      .length !=
+                                  10) {
+                            return 'Invalid Phone Number';
+                          } else {
+                            return null;
+                          }
+                        },
+                        inputBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.DIALOG,
+                          showFlags: true,
+                          setSelectorButtonAsPrefixIcon: false,
+                        ),
                       ),
                     ),
                     height20,
@@ -57,8 +93,45 @@ class _MakerRegisterState extends State<MakerRegister> {
                     /// [Register Now Button]
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      child:
-                          CustomButton(text: 'Register Now', onpressed: () {}),
+                      child: CustomButton(
+                          text: 'Register Now',
+                          onpressed: () {
+                            if (_phoneNoKey.currentState!.validate()) {
+                              isUser = false;
+                              makerRef.get().then((docs) => {
+                                    if (docs != null)
+                                      {
+                                        docs.docs.forEach((document) {
+                                          if (phoneNo == document.id) {
+                                            isUser = true;
+                                            Fluttertoast.showToast(
+                                                msg: 'User already exists');
+                                          }
+                                        }),
+                                        if (!isUser)
+                                          {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OTPVerification(
+                                                          phoneNo, isUser),
+                                                ))
+                                          }
+                                      }
+                                    else
+                                      {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OTPVerification(
+                                                      phoneNo, isUser),
+                                            ))
+                                      }
+                                  });
+                            }
+                          }),
                     ),
                     height10,
                     Row(
@@ -67,7 +140,9 @@ class _MakerRegisterState extends State<MakerRegister> {
 
                         /// [Login text link]
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(context, foodMakerLoginRoute);
+                          },
                           child: CustomText(
                             text: 'Login Now',
                             color: primaryGreen,
@@ -91,22 +166,27 @@ class _MakerRegisterState extends State<MakerRegister> {
                       children: [
                         /// [Email button]
                         Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.grey)),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.email_outlined))),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.email_outlined),
+                          ),
+                        ),
                         width20,
 
                         /// [More button]
                         Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.grey)),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.more_horiz))),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.grey)),
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.more_horiz),
+                          ),
+                        ),
                       ],
                     ),
                   ],

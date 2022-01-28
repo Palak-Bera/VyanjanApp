@@ -30,9 +30,7 @@ dependencies:
   location: ^4.3.0
   google_maps_flutter: 2.0.8
   flutter_geocoder: ^0.2.2-nullsafety
-  #yandex_geocoder: ^2.0.1
-  #geocoder2: 0.0.3
-  #geocoder: 0.1.2
+  shared_preferences: 2.0.12
   flutter:
     sdk: flutter
 

@@ -115,7 +115,7 @@ class _RoleSelectorState extends State<RoleSelector> {
                 if (role == 'Seeker')
                   Navigator.pushNamed(context, foodSeekerRoute);
                 else if (role == 'Maker')
-                  Navigator.pushNamed(context, foodMakerRoute);
+                  Navigator.pushNamed(context, foodMakerRegisterRoute);
               },
               color: primaryGreen,
               child: CustomText(

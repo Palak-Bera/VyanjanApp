@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
@@ -25,8 +26,26 @@ class _MakerRecipeState extends State<MakerRecipe> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: CustomAppbar(
-        onBackPressed: () {},
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: primaryGreen),
+        elevation: 0.0,
+        backgroundColor: white,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: IconButton(
+                icon: Icon(
+                  Icons.logout,
+                ),
+                onPressed: () {
+                  auth.signOut().then((value) => {
+                        preferences.setString('UserState', ''),
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, foodMakerLoginRoute, (route) => false)
+                      });
+                }),
+          ),
+        ],
       ),
       body: Column(
         children: [

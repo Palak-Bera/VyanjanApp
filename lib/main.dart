@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerLogin.dart';
+import 'package:food_app/features/FoodMaker/Authentication/makerRegister.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
 import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
@@ -12,6 +13,7 @@ import 'package:food_app/features/FoodSeeker/Home/userCart.dart';
 import 'package:food_app/features/FoodSeeker/Home/userDetails.dart';
 import 'package:food_app/features/InitialScreens/splashscreen.dart';
 import 'package:food_app/routes/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'routes/constants.dart';
 
 Future<void> main() async {
@@ -38,7 +40,8 @@ class App extends StatelessWidget {
         availableItemRoute: (context) => AvailableItem(),
         userDetailRoute: (context) => UserDetails(),
         userCartRoute: (context) => UserCart(),
-        foodMakerRoute: (context) => MakerLogin(),
+        foodMakerLoginRoute: (context) => MakerLogin(),
+        foodMakerRegisterRoute: (context) => MakerRegister(),
         makerDetailRoute: (context) => MakerDetails(),
         makerRecipesRoute: (context) => MakerRecipe(),
       },

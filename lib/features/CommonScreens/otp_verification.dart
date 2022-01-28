@@ -6,13 +6,15 @@ import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// You need to pass the mobile number as [phoneNumber] and
 /// a function which will be called after entring OTP as [onSubmit]
 
 class OTPVerification extends StatefulWidget {
   final String phoneNumber;
-  OTPVerification(this.phoneNumber);
+  final bool isUser;
+  OTPVerification(this.phoneNumber, this.isUser);
 
   @override
   _OTPVerificationState createState() => _OTPVerificationState();
@@ -24,8 +26,8 @@ class _OTPVerificationState extends State<OTPVerification> {
 
   @override
   void initState() {
-    _verifyPhone();
     super.initState();
+    _verifyPhone();
   }
 
   @override
@@ -61,7 +63,7 @@ class _OTPVerificationState extends State<OTPVerification> {
             ),
             Row(
               children: [
-                CustomText(text: 'Enter the 4 digit OTP sent on '),
+                CustomText(text: 'Enter the 6 digit OTP sent on '),
                 CustomText(
                   text: '${widget.phoneNumber}',
                   color: primaryGreen,
@@ -104,14 +106,22 @@ class _OTPVerificationState extends State<OTPVerification> {
                             verificationId: _verificationCode, smsCode: otp))
                         .then((value) async {
                       if (value.user != null) {
-                        makerRef.doc(widget.phoneNumber).set({
-                          'phoneNo': widget.phoneNumber,
-                          'name': '',
-                          'address': ''
-                        }).then((value) => {
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, makerDetailRoute, (route) => false)
-                            });
+                        if (widget.isUser) {
+                          preferences.setString('UserState', 'Maker');
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, makerRecipesRoute, (route) => false);
+                        } else {
+                          makerRef.doc(widget.phoneNumber).set({
+                            'phoneNo': widget.phoneNumber,
+                            'name': '',
+                            'address': ''
+                          }).then((value) => {
+                                preferences.setString(
+                                    'UserState', 'MakerDetail'),
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, makerDetailRoute, (route) => false)
+                              });
+                        }
                       }
                     });
                   } catch (e) {
@@ -129,15 +139,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                 onChanged: (val) {},
               ),
             ),
-            Row(
-              children: [
-                OutlinedButton(
-                    onPressed: () {}, child: CustomText(text: 'Resend')),
-                width10,
-                OutlinedButton(
-                    onPressed: () {}, child: CustomText(text: 'Call me')),
-              ],
-            ),
+            OutlinedButton(onPressed: () {}, child: CustomText(text: 'Resend')),
             // OutlinedButton(onPressed: () {}, child: CustomText(text: 'Try other methods')),
             height10,
             CustomButton(

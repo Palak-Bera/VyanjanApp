@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_app/features/CommonScreens/otp_verification.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-/// Login Page for [Food Maker]
+/// Register Page for [Food Maker]
 class MakerLogin extends StatefulWidget {
   MakerLogin({Key? key}) : super(key: key);
 
@@ -15,8 +17,9 @@ class MakerLogin extends StatefulWidget {
 
 class _MakerLoginState extends State<MakerLogin> {
   TextEditingController phoneController = TextEditingController();
-  String phoneNo = '';
   final GlobalKey<FormState> _phoneNoKey = GlobalKey<FormState>();
+  String phoneNo = '';
+  bool isUser = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class _MakerLoginState extends State<MakerLogin> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: 'Register as Food Maker',
+                      text: 'Login as Food Maker',
                       fontSize: 18.0,
                     ),
                     height10,
@@ -61,7 +64,7 @@ class _MakerLoginState extends State<MakerLogin> {
                           if (phoneController.value.text.isEmpty ||
                               phoneController.value.text
                                       .replaceAll(' ', '')
-                                      .length <
+                                      .length !=
                                   10) {
                             return 'Invalid Phone Number';
                           } else {
@@ -81,32 +84,49 @@ class _MakerLoginState extends State<MakerLogin> {
                     ),
                     height20,
 
-                    /// [Register Now Button]
+                    /// [Login Now Button]
                     Container(
                       width: MediaQuery.of(context).size.width,
                       child: CustomButton(
-                          text: 'Register Now',
-                          onpressed: () {
+                          text: 'Login Now',
+                          onpressed: () async {
                             if (_phoneNoKey.currentState!.validate()) {
-                              Navigator.push(
+                              await makerRef.get().then((docs) => {
+                                    if (docs != null)
+                                      {
+                                        docs.docs.forEach((document) {
+                                          if (phoneNo == document.id)
+                                            isUser = true;
+                                        }),
+                                      }
+                                  });
+                              if (isUser) {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        OTPVerification(phoneNo),
-                                  ));
+                                        OTPVerification(phoneNo, isUser),
+                                  ),
+                                );
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: 'User not registered');
+                              }
                             }
                           }),
                     ),
                     height10,
                     Row(
                       children: [
-                        CustomText(text: 'Already registered?  '),
+                        CustomText(text: 'Not registered?  '),
 
-                        /// [Login text link]
+                        /// [Register text link]
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                           child: CustomText(
-                            text: 'Login Now',
+                            text: 'Register Now',
                             color: primaryGreen,
                           ),
                         )

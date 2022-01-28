@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/features/FoodMaker/Authentication/makerLogin.dart';
+import 'package:food_app/features/FoodMaker/Authentication/makerRegister.dart';
 import 'package:food_app/features/FoodMaker/Authentication/ownerDetails.dart';
 import 'package:food_app/features/FoodMaker/Authentication/restaurantContact.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
@@ -43,8 +43,8 @@ class Routes {
       case userDetailRoute:
         return MaterialPageRoute(builder: (_) => UserDetails());
 
-      case foodMakerRoute:
-        return MaterialPageRoute(builder: (_) => MakerLogin());
+      case foodMakerRegisterRoute:
+        return MaterialPageRoute(builder: (_) => MakerRegister());
 
       case makerDetailRoute:
         return MaterialPageRoute(builder: (_) => MakerDetails());

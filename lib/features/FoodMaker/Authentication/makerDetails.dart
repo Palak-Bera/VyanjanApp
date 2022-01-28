@@ -277,6 +277,7 @@ class _MakerDetailsState extends State<MakerDetails> {
                                     _pincodeController.value.text
                                 : finalAddress
                           }).then((value) => {
+                                preferences.setString('UserState', 'Maker'),
                                 Navigator.pushNamedAndRemoveUntil(context,
                                     makerRecipesRoute, (route) => false)
                               });
