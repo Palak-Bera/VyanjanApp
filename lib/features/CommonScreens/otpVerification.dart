@@ -111,8 +111,8 @@ class _OTPVerificationState extends State<OTPVerification> {
                             {
                               if (widget.isUser) {
                                 preferences.setString('UserState', 'Maker');
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    makerRecipesRoute, (route) => false);
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, makerHomeRoute, (route) => false);
                               } else {
                                 Navigator.pushNamedAndRemoveUntil(context,
                                     makerDetailRoute, (route) => false);

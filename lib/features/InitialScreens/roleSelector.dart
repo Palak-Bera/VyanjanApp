@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
+import 'package:food_app/features/FoodMaker/Home/makerHome.dart';
 import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/resources/colors.dart';
@@ -31,7 +32,7 @@ class _RoleSelectorState extends State<RoleSelector> {
       case 'Maker':
         {
           role = 'Maker';
-          child = MakerRecipe();
+          child = MakerHome();
           break;
         }
       case 'Seeker':

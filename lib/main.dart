@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerLogin.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerRegister.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
+import 'package:food_app/features/FoodMaker/Home/makerHome.dart';
 import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
@@ -46,7 +47,7 @@ class App extends StatelessWidget {
         foodMakerLoginRoute: (context) => MakerLogin(),
         foodMakerRegisterRoute: (context) => MakerRegister(),
         makerDetailRoute: (context) => MakerDetails(),
-        makerRecipesRoute: (context) => MakerRecipe(),
+        makerHomeRoute: (context) => MakerHome(),
       },
     );
   }

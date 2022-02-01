@@ -283,8 +283,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                             'city': makerCity[makerCity.length - 3]
                           }).then((value) => {
                                 preferences.setString('UserState', 'Maker'),
-                                Navigator.pushNamedAndRemoveUntil(context,
-                                    makerRecipesRoute, (route) => false)
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, makerHomeRoute, (route) => false)
                               });
                         }
                       }),

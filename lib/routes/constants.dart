@@ -20,7 +20,7 @@ const String foodMakerLoginRoute = '/MakerLogin';
 const String makerDetailRoute = '/MakerDetails';
 const String restaurantContactRoute = '/RestaurantContact';
 const String restaurantOwnerRoute = '/OwnerDetails';
-const String makerRecipesRoute = '/MakerRecipe';
+const String makerHomeRoute = '/MakerHome';
 
 /// Routes for [Common Screen]
 const String otpRoute = '/OTPVerification';
