@@ -1,20 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_geocoder/geocoder.dart';
 import 'package:food_app/features/FoodSeeker/Home/widgets/itemCard.dart';
 import 'package:food_app/fixtures/dummy_data.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
+import 'package:location/location.dart';
 
 /// [Search Food Page] for [Food seeker] rendred when he/she is authenticated successfully
-class SearchFood extends StatefulWidget {
-  const SearchFood({Key? key}) : super(key: key);
+class SeekerHome extends StatefulWidget {
+  const SeekerHome({Key? key}) : super(key: key);
 
   @override
-  _SearchFoodState createState() => _SearchFoodState();
+  _SeekerHomeState createState() => _SeekerHomeState();
 }
 
-class _SearchFoodState extends State<SearchFood> {
+class _SeekerHomeState extends State<SeekerHome> {
+  String _city = '';
+  String _country = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
+  }
+
+  getLocation() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    final coordinates =
+        new Coordinates(_locationData.latitude, _locationData.longitude);
+    var address =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    setState(() {
+      var arr = address.first.addressLine!.split(',');
+      _city = arr[arr.length - 3];
+      _country = arr[arr.length - 1];
+      print(arr);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,9 +81,9 @@ class _SearchFoodState extends State<SearchFood> {
                   ),
                   Expanded(
                     child: ListTile(
-                      title: Text('Anand'),
+                      title: Text(_city),
                       subtitle: Text(
-                        'India',
+                        _country,
                         style: TextStyle(color: primaryGreen),
                       ),
                     ),
@@ -50,7 +97,7 @@ class _SearchFoodState extends State<SearchFood> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('Robert'),
+                            Text('Name'),
                             Text(
                               'Food Seeker',
                               style: TextStyle(color: primaryGreen),
@@ -60,7 +107,7 @@ class _SearchFoodState extends State<SearchFood> {
                         width10,
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, userDetailRoute);
+                            Navigator.pushNamed(context, seekerDashboardRoute);
                           },
                           child: CircleAvatar(
                             backgroundImage:
@@ -94,31 +141,31 @@ class _SearchFoodState extends State<SearchFood> {
               height20,
 
               /// Tag list for various [Filters]
-              Container(
-                height: 30.0,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    Tag(
-                      text: 'New Arrival',
-                      onTap: () {},
-                    ),
-                    Tag(
-                      text: 'Offers',
-                      onTap: () {},
-                    ),
-                    Tag(
-                      text: 'Fast Delivery',
-                      onTap: () {},
-                    ),
-                    Tag(
-                      text: 'More',
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-              ),
-              height20,
+              // Container(
+              //   height: 30.0,
+              //   child: ListView(
+              //     scrollDirection: Axis.horizontal,
+              //     children: [
+              //       Tag(
+              //         text: 'New Arrival',
+              //         onTap: () {},
+              //       ),
+              //       Tag(
+              //         text: 'Offers',
+              //         onTap: () {},
+              //       ),
+              //       Tag(
+              //         text: 'Fast Delivery',
+              //         onTap: () {},
+              //       ),
+              //       Tag(
+              //         text: 'More',
+              //         onTap: () {},
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // height20,
 
               /// Food-Category Grid rendered [by Default]
               Expanded(

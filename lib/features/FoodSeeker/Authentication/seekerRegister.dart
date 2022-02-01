@@ -7,15 +7,12 @@ import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-/// login Page for [Food Seeker]
-class SeekerLogin extends StatefulWidget {
-  SeekerLogin({Key? key}) : super(key: key);
-
+class SeekerRegister extends StatefulWidget {
   @override
-  _SeekerLoginState createState() => _SeekerLoginState();
+  _SeekerRegisterState createState() => _SeekerRegisterState();
 }
 
-class _SeekerLoginState extends State<SeekerLogin> {
+class _SeekerRegisterState extends State<SeekerRegister> {
   TextEditingController phoneController = TextEditingController();
   final GlobalKey<FormState> _phoneNoKey = GlobalKey<FormState>();
 
@@ -43,7 +40,7 @@ class _SeekerLoginState extends State<SeekerLogin> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: 'Login as Food Seeker',
+                      text: 'Register as Food Seeker',
                       fontSize: 18.0,
                     ),
                     height10,
@@ -87,45 +84,57 @@ class _SeekerLoginState extends State<SeekerLogin> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       child: CustomButton(
-                          text: 'Login Now',
-                          onpressed: () async {
+                          text: 'Register Now',
+                          onpressed: () {
                             if (_phoneNoKey.currentState!.validate()) {
-                              await makerRef.get().then((docs) => {
+                              isUser = false;
+                              makerRef.get().then((docs) => {
                                     if (docs != null)
                                       {
                                         docs.docs.forEach((document) {
-                                          if (phoneNo == document.id)
+                                          if (phoneNo == document.id) {
                                             isUser = true;
+                                            Fluttertoast.showToast(
+                                                msg: 'User already exists');
+                                          }
                                         }),
+                                        if (!isUser)
+                                          {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OTPVerification(
+                                                          phoneNo, isUser),
+                                                ))
+                                          }
+                                      }
+                                    else
+                                      {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OTPVerification(
+                                                      phoneNo, isUser),
+                                            ))
                                       }
                                   });
-                              if (isUser) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        OTPVerification(phoneNo, isUser),
-                                  ),
-                                );
-                              } else {
-                                Fluttertoast.showToast(
-                                    msg: 'User not registered');
-                              }
                             }
                           }),
                     ),
                     height10,
                     Row(
                       children: [
-                        CustomText(text: 'Not registered?  '),
+                        CustomText(text: 'Already registered?  '),
 
                         /// [Login text link]
                         InkWell(
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.pushNamed(context, foodSeekerLoginRoute);
                           },
                           child: CustomText(
-                            text: 'Register Now',
+                            text: 'Login Now',
                             color: primaryGreen,
                           ),
                         )

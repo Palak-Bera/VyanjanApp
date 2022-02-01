@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:food_app/features/CommonScreens/otp_verification.dart';
+import 'package:food_app/features/CommonScreens/otpVerification.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';

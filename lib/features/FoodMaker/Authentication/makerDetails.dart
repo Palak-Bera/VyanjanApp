@@ -9,14 +9,14 @@ import 'package:food_app/features/CommonScreens/googleMapScreen.dart' as map;
 
 /// Screen for taking [Restaurant details]
 
-String finalAddress = '';
-
 class MakerDetails extends StatefulWidget {
   @override
   _MakerDetailsState createState() => _MakerDetailsState();
 }
 
 class _MakerDetailsState extends State<MakerDetails> {
+  String makerFinalAddress = '';
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController _nameController = TextEditingController();
@@ -31,11 +31,6 @@ class _MakerDetailsState extends State<MakerDetails> {
   String phoneNo = '';
   String _alternatePhoneNo = '';
   String address = '';
-
-  @override
-  void reassemble() {
-    super.reassemble();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +121,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                   controller: _buildingController,
                   textCapitalization: TextCapitalization.words,
                   validator: (value) {
-                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                    if (makerFinalAddress == '' &&
+                        (value!.isEmpty || value == null))
                       return 'Please Enter your Building Name';
                     else
                       return null;
@@ -140,7 +136,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                   controller: _landmarkController,
                   textCapitalization: TextCapitalization.words,
                   validator: (value) {
-                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                    if (makerFinalAddress == '' &&
+                        (value!.isEmpty || value == null))
                       return 'Please Enter Landmark';
                     else
                       return null;
@@ -154,7 +151,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                   controller: _cityController,
                   textCapitalization: TextCapitalization.words,
                   validator: (value) {
-                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                    if (makerFinalAddress == '' &&
+                        (value!.isEmpty || value == null))
                       return 'Please Enter your City';
                     else
                       return null;
@@ -168,7 +166,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                   controller: _stateController,
                   textCapitalization: TextCapitalization.words,
                   validator: (value) {
-                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                    if (makerFinalAddress == '' &&
+                        (value!.isEmpty || value == null))
                       return 'Please Enter your State';
                     else
                       return null;
@@ -183,7 +182,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                   maxLength: 6,
                   textCapitalization: TextCapitalization.words,
                   validator: (value) {
-                    if (finalAddress == '' && (value!.isEmpty || value == null))
+                    if (makerFinalAddress == '' &&
+                        (value!.isEmpty || value == null))
                       return 'Please Enter your Pincode';
                     else
                       return null;
@@ -247,7 +247,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                       color: primaryGreen,
                     ),
                   ),
-                  subtitle: Text(finalAddress == '' ? 'Address' : finalAddress),
+                  subtitle: Text(
+                      makerFinalAddress == '' ? 'Address' : makerFinalAddress),
                   trailing: Icon(
                     Icons.arrow_forward_ios,
                     color: primaryGreen,
@@ -262,10 +263,13 @@ class _MakerDetailsState extends State<MakerDetails> {
                       text: 'Continue',
                       onpressed: () {
                         if (_formKey.currentState!.validate()) {
-                          makerRef.doc(auth.currentUser!.phoneNumber).update({
+                          var makerCity = makerFinalAddress.split(',');
+
+                          makerRef.doc(auth.currentUser!.phoneNumber).set({
                             'name': _nameController.value.text,
+                            'phoneNo': auth.currentUser!.phoneNumber,
                             'alternatePhoneNo': _alternatePhoneNo,
-                            'address': finalAddress == ''
+                            'address': makerFinalAddress == ''
                                 ? _buildingController.value.text +
                                     ' ' +
                                     _landmarkController.value.text +
@@ -275,7 +279,8 @@ class _MakerDetailsState extends State<MakerDetails> {
                                     _stateController.value.text +
                                     ' ' +
                                     _pincodeController.value.text
-                                : finalAddress
+                                : makerFinalAddress,
+                            'city': makerCity[makerCity.length - 3]
                           }).then((value) => {
                                 preferences.setString('UserState', 'Maker'),
                                 Navigator.pushNamedAndRemoveUntil(context,
@@ -324,7 +329,7 @@ class _MakerDetailsState extends State<MakerDetails> {
           lat: _locationData.latitude!,
           long: _locationData.longitude!,
           callback: (value) {
-            finalAddress = value;
+            makerFinalAddress = value;
             setState(() {});
           },
         ),

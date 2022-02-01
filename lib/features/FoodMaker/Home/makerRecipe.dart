@@ -41,7 +41,7 @@ class _MakerRecipeState extends State<MakerRecipe> {
                   auth.signOut().then((value) => {
                         preferences.setString('UserState', ''),
                         Navigator.pushNamedAndRemoveUntil(
-                            context, foodMakerLoginRoute, (route) => false)
+                            context, foodMakerRegisterRoute, (route) => false)
                       });
                 }),
           ),

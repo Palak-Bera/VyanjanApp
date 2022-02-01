@@ -5,13 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String intialRoute = '/';
 
 /// Routes for [Food Seeker]
-const String foodSeekerRoute = '/SeekerLogin';
+const String foodSeekerLoginRoute = '/SeekerLogin';
+const String foodSeekerRegisterRoute = '/SeekerRegister';
 const String seekerDetailRoute = '/SeekerDetails';
-const String searchFoodRoute = '/SearchFood';
+const String seekerHomeRoute = '/SeekerHome';
 const String availableFoodMakerRoute = '/AvailableFoodMaker';
 const String availableItemRoute = '/AvailableItem';
-const String userCartRoute = '/UserCart';
-const String userDetailRoute = '/UserDetails';
+const String seekerCartRoute = '/SeekerCart';
+const String seekerDashboardRoute = '/SeekerDashboard';
 
 /// Routes for [Food Maker]
 const String foodMakerRegisterRoute = '/MakerRegister';
@@ -27,7 +28,11 @@ const String otpRoute = '/OTPVerification';
 /// Firebase initializations
 CollectionReference makerRef =
     FirebaseFirestore.instance.collection('foodMaker');
+CollectionReference seekerRef =
+    FirebaseFirestore.instance.collection('foodSeeker');
 FirebaseAuth auth = FirebaseAuth.instance;
+
+String role = '';
 
 initializeSharedPreference() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

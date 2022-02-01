@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
+import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,7 +23,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController _googleMapController;
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   String searchAddress = '';
-  // String finalAddress = '';
+  String finalAddress = '';
 
   @override
   void initState() {
@@ -167,6 +168,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           ),
         )
         .then((value) => {
+              getAddress(
+                  first.coordinates.latitude!, first.coordinates.longitude!),
               getMarkers(
                   first.coordinates.latitude!, first.coordinates.longitude!)
             });

@@ -7,9 +7,9 @@ import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableFoodMaker.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableItem.dart';
-import 'package:food_app/features/FoodSeeker/Home/searchFood.dart';
-import 'package:food_app/features/FoodSeeker/Home/userCart.dart';
-import 'package:food_app/features/FoodSeeker/Home/userDetails.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerCart.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerDashboard.dart';
 import 'package:food_app/features/InitialScreens/splashscreen.dart';
 import 'package:food_app/routes/constants.dart';
 
@@ -22,14 +22,14 @@ class Routes {
       case otpRoute:
         return MaterialPageRoute(builder: (_) => SplashScreen());
 
-      case foodSeekerRoute:
+      case foodSeekerLoginRoute:
         return MaterialPageRoute(builder: (_) => SeekerLogin());
 
       case seekerDetailRoute:
         return MaterialPageRoute(builder: (_) => SeekerDetails());
 
-      case searchFoodRoute:
-        return MaterialPageRoute(builder: (_) => SearchFood());
+      case seekerHomeRoute:
+        return MaterialPageRoute(builder: (_) => SeekerHome());
 
       case availableFoodMakerRoute:
         return MaterialPageRoute(builder: (_) => AvailableFoodMaker());
@@ -37,11 +37,11 @@ class Routes {
       case availableItemRoute:
         return MaterialPageRoute(builder: (_) => AvailableItem());
 
-      case userCartRoute:
-        return MaterialPageRoute(builder: (_) => UserCart()); //left
+      case seekerCartRoute:
+        return MaterialPageRoute(builder: (_) => SeekerCart()); //left
 
-      case userDetailRoute:
-        return MaterialPageRoute(builder: (_) => UserDetails());
+      case seekerDashboardRoute:
+        return MaterialPageRoute(builder: (_) => SeekerDashboard());
 
       case foodMakerRegisterRoute:
         return MaterialPageRoute(builder: (_) => MakerRegister());

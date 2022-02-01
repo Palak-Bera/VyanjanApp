@@ -6,11 +6,13 @@ import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
 import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
+import 'package:food_app/features/FoodSeeker/Authentication/seekerRegister.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableFoodMaker.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableItem.dart';
-import 'package:food_app/features/FoodSeeker/Home/searchFood.dart';
-import 'package:food_app/features/FoodSeeker/Home/userCart.dart';
-import 'package:food_app/features/FoodSeeker/Home/userDetails.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerCart.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerDashboard.dart';
+import 'package:food_app/features/InitialScreens/roleSelector.dart';
 import 'package:food_app/features/InitialScreens/splashscreen.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,13 +35,14 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       routes: {
-        foodSeekerRoute: (context) => SeekerLogin(),
+        foodSeekerLoginRoute: (context) => SeekerLogin(),
+        foodSeekerRegisterRoute: (context) => SeekerRegister(),
         seekerDetailRoute: (context) => SeekerDetails(),
-        searchFoodRoute: (context) => SearchFood(),
+        seekerHomeRoute: (context) => SeekerHome(),
         availableFoodMakerRoute: (context) => AvailableFoodMaker(),
         availableItemRoute: (context) => AvailableItem(),
-        userDetailRoute: (context) => UserDetails(),
-        userCartRoute: (context) => UserCart(),
+        seekerDashboardRoute: (context) => SeekerDashboard(),
+        seekerCartRoute: (context) => SeekerCart(),
         foodMakerLoginRoute: (context) => MakerLogin(),
         foodMakerRegisterRoute: (context) => MakerRegister(),
         makerDetailRoute: (context) => MakerDetails(),

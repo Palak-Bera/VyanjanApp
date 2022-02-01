@@ -106,21 +106,39 @@ class _OTPVerificationState extends State<OTPVerification> {
                             verificationId: _verificationCode, smsCode: otp))
                         .then((value) async {
                       if (value.user != null) {
-                        if (widget.isUser) {
-                          preferences.setString('UserState', 'Maker');
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, makerRecipesRoute, (route) => false);
-                        } else {
-                          makerRef.doc(widget.phoneNumber).set({
-                            'phoneNo': widget.phoneNumber,
-                            'name': '',
-                            'address': ''
-                          }).then((value) => {
-                                preferences.setString(
-                                    'UserState', 'MakerDetail'),
+                        switch (role) {
+                          case 'Maker':
+                            {
+                              if (widget.isUser) {
+                                preferences.setString('UserState', 'Maker');
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    makerRecipesRoute, (route) => false);
+                              } else {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    makerDetailRoute, (route) => false);
+                                // makerRef.doc(widget.phoneNumber).set({
+                                //   'phoneNo': widget.phoneNumber,
+                                // }).then((value) => {
+                                //       preferences.setString(
+                                //           'UserState', 'MakerDetail'),
+                                //       Navigator.pushNamedAndRemoveUntil(context,
+                                //           makerDetailRoute, (route) => false)
+                                //     });
+                              }
+                              break;
+                            }
+                          case 'Seeker':
+                            {
+                              if (widget.isUser) {
+                                preferences.setString('UserState', 'Seeker');
                                 Navigator.pushNamedAndRemoveUntil(
-                                    context, makerDetailRoute, (route) => false)
-                              });
+                                    context, seekerHomeRoute, (route) => false);
+                              } else {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    seekerDetailRoute, (route) => false);
+                              }
+                              break;
+                            }
                         }
                       }
                     });

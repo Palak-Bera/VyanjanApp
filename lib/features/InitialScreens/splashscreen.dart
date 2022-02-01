@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
 import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
-import 'package:food_app/features/FoodSeeker/Home/searchFood.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/features/InitialScreens/roleSelector.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
@@ -18,23 +18,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    late String userState;
+    //late String userState;
     Timer(
       Duration(seconds: 4),
       () async => {
         preferences = await initializeSharedPreference(),
-        userState = preferences.get('UserState').toString(),
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => userState == "Maker"
-                  ? MakerRecipe()
-                  : userState == "Seeker"
-                      ? SearchFood()
-                      : userState == "MakerDetail"
-                          ? MakerDetails()
-                          : RoleSelector(),
-            ))
+          context,
+          MaterialPageRoute(
+            builder: (context) => RoleSelector(),
+          ),
+        )
       },
     );
   }

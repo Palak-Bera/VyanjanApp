@@ -3,16 +3,15 @@ import 'package:food_app/resources/colors.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
-
 /// [user cart page] for selected items by users
-class UserCart extends StatefulWidget {
-  const UserCart({Key? key}) : super(key: key);
+class SeekerCart extends StatefulWidget {
+  const SeekerCart({Key? key}) : super(key: key);
 
   @override
-  _UserCartState createState() => _UserCartState();
+  _SeekerCartState createState() => _SeekerCartState();
 }
 
-class _UserCartState extends State<UserCart> {
+class _SeekerCartState extends State<SeekerCart> {
   int cartItem = 1;
   String choosePref = "";
 
