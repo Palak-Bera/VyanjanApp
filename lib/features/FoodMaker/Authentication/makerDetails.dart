@@ -280,9 +280,11 @@ class _MakerDetailsState extends State<MakerDetails> {
                                     ' ' +
                                     _pincodeController.value.text
                                 : makerFinalAddress,
-                            'city': makerCity[makerCity.length - 3]
+                            'city': makerCity[makerCity.length - 3],
+                            'status': true
                           }).then((value) => {
                                 preferences.setString('UserState', 'Maker'),
+                                preferences.setBool('status', true),
                                 Navigator.pushNamedAndRemoveUntil(
                                     context, makerHomeRoute, (route) => false)
                               });

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
@@ -94,93 +96,12 @@ class _SeekerCartState extends State<SeekerCart> {
                   Divider(
                     color: grey,
                   ),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text: "Veg.Cheese Sandwich",
-                              fontSize: 16,
-                            ),
-                            CustomText(
-                              text: "Rs. 110",
-                              fontSize: 16,
-                            ),
-                            CustomText(
-                              text: "Medium",
-                              fontSize: 15,
-                              color: grey,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                width: 1.0,
-                                color: primaryGreen,
-                                // style:
-                              )),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
-                                child: Row(
-                                  children: [
-                                    InkWell(
-                                      child: Icon(
-                                        Icons.remove,
-                                        color: primaryGreen,
-                                      ),
-                                      onTap: () {
-                                        setState(() {
-                                          (cartItem <= 1)
-                                              ? cartItem = 1
-                                              : cartItem--;
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    CustomText(
-                                      text: "$cartItem",
-                                      color: primaryGreen,
-                                      fontSize: 18,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    InkWell(
-                                      child: Icon(
-                                        Icons.add,
-                                        color: primaryGreen,
-                                      ),
-                                      onTap: () {
-                                        setState(() {
-                                          cartItem++;
-                                        });
-                                      },
-                                    ),
-                                    // InkWell(child: CustomText(text: "+",color: primaryGreen,fontSize: 25,fontWeight: FontWeight.w500,)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            CustomText(
-                              text: "Rs. 110",
-                              fontSize: 16,
-                            )
-                          ],
-                        )
-                      ],
-                    ),
+                  ListView.builder(
+                    itemBuilder: _buildCartItems,
+                    itemCount: cart.cartItem.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
                   ),
-                  height20,
 
                   /// [Choose Preference]
                   Row(
@@ -303,6 +224,14 @@ class _SeekerCartState extends State<SeekerCart> {
             onpressed: () {},
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCartItems(BuildContext context, int index) {
+    return ListTile(
+      title: Text(
+        cart.cartItem[index].productName.toString(),
       ),
     );
   }

@@ -85,7 +85,7 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, availableItemRoute);
+                    Navigator.pushNamed(context, makerMenuRoute);
                   },
                   child: ListView.builder(
                     itemBuilder: _buildFoodMakerCard,

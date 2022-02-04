@@ -10,7 +10,7 @@ const String foodSeekerRegisterRoute = '/SeekerRegister';
 const String seekerDetailRoute = '/SeekerDetails';
 const String seekerHomeRoute = '/SeekerHome';
 const String availableFoodMakerRoute = '/AvailableFoodMaker';
-const String availableItemRoute = '/AvailableItem';
+const String makerMenuRoute = '/MakerMenu';
 const String seekerCartRoute = '/SeekerCart';
 const String seekerDashboardRoute = '/SeekerDashboard';
 
@@ -24,6 +24,7 @@ const String makerHomeRoute = '/MakerHome';
 
 /// Routes for [Common Screen]
 const String otpRoute = '/OTPVerification';
+const String roleSelectorRoute = '/RoleSelector';
 
 /// Firebase initializations
 CollectionReference makerRef =

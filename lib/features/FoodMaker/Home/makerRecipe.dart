@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
@@ -15,35 +16,19 @@ class MakerRecipe extends StatefulWidget {
 }
 
 class _MakerRecipeState extends State<MakerRecipe> {
+  bool _available = true;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _dishNameController = TextEditingController();
   TextEditingController _descController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
-  var menu = <Map>[];
 
   @override
   void initState() {
     super.initState();
-    //getDishes();
-  }
-
-  getDishes() async {
-    QuerySnapshot querySnapshot = await makerRef
-        .doc(auth.currentUser!.phoneNumber)
-        .collection('menu')
-        .get();
-
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var map = {};
-      map['name'] = querySnapshot.docs[i].get('name');
-      map['description'] = querySnapshot.docs[i].get('description');
-      map['price'] = querySnapshot.docs[i].get('price');
-      setState(() {
-        menu.add(map);
-      });
-    }
-    print(querySnapshot.docs);
-    return menu;
+    setState(() {
+      _available = preferences.getBool('status');
+    });
   }
 
   @override
@@ -61,10 +46,39 @@ class _MakerRecipeState extends State<MakerRecipe> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomText(
-                      text: 'Demo',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                    Row(
+                      children: [
+                        CustomText(
+                          text: 'Demo',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        Switch(
+                          value: _available,
+                          onChanged: (value) {
+                            preferences.setBool('status', value);
+                            setState(() {
+                              _available = value;
+                              makerRef
+                                  .doc(auth.currentUser!.phoneNumber)
+                                  .update({
+                                'status': value,
+                              });
+                            });
+                          },
+                          activeColor: primaryGreen,
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          color: _available ? primaryGreen : Colors.grey,
+                          size: 15.0,
+                        ),
+                        Text(_available ? 'Available' : 'Not Available'),
+                      ],
                     ),
                     CustomText(
                       text: "Pizza, FastFood",

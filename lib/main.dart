@@ -9,7 +9,7 @@ import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerRegister.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableFoodMaker.dart';
-import 'package:food_app/features/FoodSeeker/Home/availableItem.dart';
+import 'package:food_app/features/FoodSeeker/Home/makerMenu.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerCart.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerDashboard.dart';
@@ -36,12 +36,12 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       routes: {
+        roleSelectorRoute: (context) => RoleSelector(),
         foodSeekerLoginRoute: (context) => SeekerLogin(),
         foodSeekerRegisterRoute: (context) => SeekerRegister(),
         seekerDetailRoute: (context) => SeekerDetails(),
         seekerHomeRoute: (context) => SeekerHome(),
         availableFoodMakerRoute: (context) => AvailableFoodMaker(),
-        availableItemRoute: (context) => AvailableItem(),
         seekerDashboardRoute: (context) => SeekerDashboard(),
         seekerCartRoute: (context) => SeekerCart(),
         foodMakerLoginRoute: (context) => MakerLogin(),

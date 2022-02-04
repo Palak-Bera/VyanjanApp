@@ -6,7 +6,7 @@ import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableFoodMaker.dart';
-import 'package:food_app/features/FoodSeeker/Home/availableItem.dart';
+import 'package:food_app/features/FoodSeeker/Home/makerMenu.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerCart.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerDashboard.dart';
@@ -33,9 +33,6 @@ class Routes {
 
       case availableFoodMakerRoute:
         return MaterialPageRoute(builder: (_) => AvailableFoodMaker());
-
-      case availableItemRoute:
-        return MaterialPageRoute(builder: (_) => AvailableItem());
 
       case seekerCartRoute:
         return MaterialPageRoute(builder: (_) => SeekerCart()); //left
