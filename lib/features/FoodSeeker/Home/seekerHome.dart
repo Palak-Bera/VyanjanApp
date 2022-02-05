@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:flutter_geocoder/geocoder.dart';
+import 'package:food_app/features/FoodSeeker/Home/searchBar.dart';
 import 'package:food_app/fixtures/dummy_data.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
+import 'package:get/get.dart';
 import 'package:location/location.dart';
 
 import 'makerMenu.dart';
@@ -29,6 +31,8 @@ class _SeekerHomeState extends State<SeekerHome> {
 
   List makerList = [];
   List<QueryDocumentSnapshot> availableMaker = [];
+  late QuerySnapshot querySnapshot;
+  bool isExecuted = false;
 
   @override
   void initState() {
@@ -193,11 +197,15 @@ class _SeekerHomeState extends State<SeekerHome> {
 
                         /// [Search option for Food items]
                         TextFormField(
-                          onChanged: (value) {},
-                          onFieldSubmitted: (value) {
+                          onTap: () {
                             Navigator.pushNamed(
                                 context, availableFoodMakerRoute);
                           },
+                          onChanged: (value) {},
+                          // onFieldSubmitted: (value) {
+                          //   Navigator.pushNamed(
+                          //       context, availableFoodMakerRoute);
+                          // },
                           decoration: InputDecoration(
                             prefixIcon: Icon(
                               Icons.search,

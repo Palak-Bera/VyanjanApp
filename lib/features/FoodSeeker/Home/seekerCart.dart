@@ -14,7 +14,6 @@ class SeekerCart extends StatefulWidget {
 }
 
 class _SeekerCartState extends State<SeekerCart> {
-  int cartItem = 1;
   String choosePref = "";
 
   @override

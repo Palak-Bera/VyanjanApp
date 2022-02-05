@@ -45,11 +45,9 @@ class _MakerMenuState extends State<MakerMenu> {
 
     makerRef.doc(widget.makerPhoneNo).collection('menu').get().then((value) => {
           value.docs.forEach((element) {
-            // print(cart.cartItem
-            //     .indexWhere((e) => e.productName == element.get('name')));
             index = cart.cartItem
                 .indexWhere((e) => e.productName == element.get('name'));
-            print(index.toString());
+            print('index' + index.toString());
             setState(() {
               makerMenuList.add({
                 'dishName': element.get('name'),
@@ -191,6 +189,10 @@ class _MakerMenuState extends State<MakerMenu> {
         ],
       ),
     );
+  }
+
+  Widget alertDialog(String cartMakerItems, String thisMaker) {
+    return AlertDialog();
   }
 
   Widget _buildAvailableItemCard(BuildContext context, int index) {
@@ -468,16 +470,101 @@ class _MakerMenuState extends State<MakerMenu> {
                               ),
                               onPressed: () {
                                 // showsheet();
-                                cart.addToCart(
-                                    productId: index,
-                                    quantity: 1,
-                                    productName: makerMenuList[index]
-                                        ['dishName'],
-                                    unitPrice: int.parse(
-                                        makerMenuList[index]['price']));
-                                setState(() {
-                                  makerMenuList[index]['quantity'] = 1;
-                                });
+                                if (cart.cartItem.isEmpty) {
+                                  preferences.setString(
+                                      'cartMakerItems', widget.makerName);
+                                  cart.addToCart(
+                                      productId: index,
+                                      quantity: 1,
+                                      productName: makerMenuList[index]
+                                          ['dishName'],
+                                      unitPrice: int.parse(
+                                          makerMenuList[index]['price']));
+                                  setState(() {
+                                    makerMenuList[index]['quantity'] = 0;
+                                  });
+                                } else {
+                                  if (preferences.getString('cartMakerItems') !=
+                                      widget.makerName) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Row(
+                                              children: [
+                                                Icon(Icons.location_on),
+                                                Text(
+                                                  'Replace cart items?',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                            content: Text(
+                                                'Your cart contains dishes from ${preferences.getString('cartMakerItems')}. Do you want to discard the selection and add dishes from ${widget.makerName}'),
+                                            actions: [
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary: primaryGreen),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  setState(() {
+                                                    makerMenuList[index]
+                                                        ['quantity'] = 0;
+                                                  });
+                                                },
+                                                child: Text('No'),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    primary: primaryGreen),
+                                                onPressed: () {
+                                                  cart.cartItem.clear();
+
+                                                  for (int i = 0;
+                                                      i < makerMenuList.length;
+                                                      i++) {
+                                                    setState(() {
+                                                      makerMenuList[i]
+                                                          ['quantity'] = 0;
+                                                    });
+                                                  }
+
+                                                  cart.addToCart(
+                                                      productId: index,
+                                                      quantity: 1,
+                                                      productName:
+                                                          makerMenuList[index]
+                                                              ['dishName'],
+                                                      unitPrice: int.parse(
+                                                          makerMenuList[index]
+                                                              ['price']));
+
+                                                  setState(() {
+                                                    makerMenuList[index]
+                                                        ['quantity'] = 1;
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('Yes'),
+                                              )
+                                            ],
+                                          );
+                                        });
+                                  } else {
+                                    cart.addToCart(
+                                        productId: index,
+                                        quantity: 1,
+                                        productName: makerMenuList[index]
+                                            ['dishName'],
+                                        unitPrice: int.parse(
+                                            makerMenuList[index]['price']));
+                                  }
+                                  setState(() {
+                                    makerMenuList[index]['quantity'] = 1;
+                                  });
+                                }
                               })
                           : Container(
                               decoration: BoxDecoration(
