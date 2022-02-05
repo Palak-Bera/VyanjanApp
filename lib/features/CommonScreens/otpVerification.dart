@@ -111,8 +111,21 @@ class _OTPVerificationState extends State<OTPVerification> {
                             {
                               if (widget.isUser) {
                                 preferences.setString('UserState', 'Maker');
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context, makerHomeRoute, (route) => false);
+                                bool status = false;
+                                makerRef
+                                    .doc(auth.currentUser!.phoneNumber)
+                                    .get()
+                                    .then((value) => {
+                                          status = value.get('status'),
+                                          print('status: ' + status.toString()),
+                                          preferences.setBool('status', status)
+                                        })
+                                    .whenComplete(() => {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              makerHomeRoute,
+                                              (route) => false)
+                                        });
                               } else {
                                 Navigator.pushNamedAndRemoveUntil(context,
                                     makerDetailRoute, (route) => false);
