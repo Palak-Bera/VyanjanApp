@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_number_picker/flutter_number_picker.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
@@ -22,10 +24,11 @@ class _SeekerCartState extends State<SeekerCart> {
     var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: white,
-      appBar: CustomAppbar(
-        onBackPressed: () {
-          Navigator.pop(context);
-        },
+      appBar: AppBar(
+        backwardsCompatibility: true,
+        iconTheme: IconThemeData(color: primaryGreen),
+        elevation: 0.0,
+        backgroundColor: white,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -45,7 +48,7 @@ class _SeekerCartState extends State<SeekerCart> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomText(
-                              text: "Eat It More",
+                              text: preferences.getString('cartMakerItems'),
                               fontSize: 20,
                               fontWeight: FontWeight.w500,
                             ),
@@ -219,8 +222,15 @@ class _SeekerCartState extends State<SeekerCart> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: CustomButton(
-            text: "Proceed for Payment",
-            onpressed: () {},
+            text: auth.currentUser != null
+                ? "Proceed for Payment"
+                : "Sign In to Continue",
+            onpressed: () {
+              if (auth.currentUser != null) {
+              } else {
+                Navigator.pushNamed(context, foodSeekerRegisterRoute);
+              }
+            },
           ),
         ),
       ),
@@ -228,9 +238,79 @@ class _SeekerCartState extends State<SeekerCart> {
   }
 
   Widget _buildCartItems(BuildContext context, int index) {
-    return ListTile(
-      title: Text(
-        cart.cartItem[index].productName.toString(),
+    return Padding(
+      padding: const EdgeInsets.only(top: 15),
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(color: Colors.black26, width: 1)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// [item name]
+                    Text(
+                      cart.cartItem[index].productName.toString(),
+                      softWrap: true,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                      ),
+                    ),
+
+                    /// [item category]
+                    CustomText(
+                      text: cart.cartItem[index].subTotal.toString(),
+                      fontSize: 15,
+                      color: grey,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                child: Container(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: primaryGreen),
+                    ),
+                    child: CustomNumberPicker(
+                      initialValue: cart.cartItem[index].quantity,
+                      maxValue: 10,
+                      minValue: 1,
+                      step: 1,
+                      shape: Border.all(color: white),
+                      customAddButton: Icon(
+                        Icons.add,
+                        color: primaryGreen,
+                      ),
+                      customMinusButton: Icon(
+                        Icons.remove,
+                        color: primaryGreen,
+                      ),
+                      onValue: (value) {
+                        cart.addToCart(
+                            productId: index,
+                            unitPrice: cart.cartItem[index].unitPrice,
+                            productName: cart.cartItem[index].productName,
+                            quantity: int.parse(value.toString()));
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

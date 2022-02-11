@@ -21,6 +21,8 @@ class _MakerLoginState extends State<MakerLogin> {
   String phoneNo = '';
   bool isUser = false;
 
+  bool _loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,163 +30,197 @@ class _MakerLoginState extends State<MakerLogin> {
       body: SafeArea(
         child: SingleChildScrollView(
           reverse: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: Stack(
             children: [
-              /// Introductory image in the beginning
-              Container(
-                child: Image.asset('assets/images/f9.png'),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: 'Login as Food Maker',
-                      fontSize: 18.0,
-                    ),
-                    height10,
-
-                    /// [Phone number input field]
-                    Form(
-                      key: _phoneNoKey,
-                      child: InternationalPhoneNumberInput(
-                        ignoreBlank: true,
-                        initialValue: PhoneNumber(
-                            isoCode: 'IN', phoneNumber: '', dialCode: '+91'),
-                        textFieldController: phoneController,
-                        maxLength: 12,
-                        onInputChanged: (value) {
-                          phoneNo = value.toString();
-                        },
-                        validator: (phone) {
-                          print(phoneController.value.text.replaceAll(' ', ''));
-                          if (phoneController.value.text.isEmpty ||
-                              phoneController.value.text
-                                      .replaceAll(' ', '')
-                                      .length !=
-                                  10) {
-                            return 'Invalid Phone Number';
-                          } else {
-                            return null;
-                          }
-                        },
-                        inputBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        keyboardType: TextInputType.phone,
-                        selectorConfig: SelectorConfig(
-                          selectorType: PhoneInputSelectorType.DIALOG,
-                          showFlags: true,
-                          setSelectorButtonAsPrefixIcon: false,
-                        ),
-                      ),
-                    ),
-                    height20,
-
-                    /// [Login Now Button]
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: CustomButton(
-                          text: 'Login Now',
-                          onpressed: () async {
-                            if (_phoneNoKey.currentState!.validate()) {
-                              await makerRef.get().then((docs) => {
-                                    if (docs != null)
-                                      {
-                                        docs.docs.forEach((document) {
-                                          if (phoneNo == document.id)
-                                            isUser = true;
-                                        }),
-                                      }
-                                  });
-                              if (isUser) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        OTPVerification(phoneNo, isUser),
-                                  ),
-                                );
-                              } else {
-                                Fluttertoast.showToast(
-                                    msg: 'User not registered');
-                              }
-                            }
-                          }),
-                    ),
-                    height10,
-                    Row(
-                      children: [
-                        CustomText(text: 'Not registered?  '),
-
-                        /// [Register text link]
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: CustomText(
-                            text: 'Register Now',
-                            color: primaryGreen,
-                          ),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(child: Divider()),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomText(text: 'or'),
-                        ),
-                        Expanded(child: Divider()),
-                      ],
-                    ),
-                    height20,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        /// [Email button]
-                        Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.grey)),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.email_outlined))),
-                        width20,
-
-                        /// [More button]
-                        Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.grey)),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.more_horiz))),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              height10,
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  CustomText(
-                    text: 'By continuining, you agree to our',
-                    color: Colors.grey,
-                    fontSize: 10.0,
+                  /// Introductory image in the beginning
+                  Container(
+                    child: Image.asset('assets/images/f9.png'),
                   ),
-                  CustomText(
-                    text: 'Terms of Serivce  Privacy Policy  Content Policy',
-                    color: Colors.grey,
-                    fontSize: 10.0,
+                  Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: 'Login as Food Maker',
+                          fontSize: 18.0,
+                        ),
+                        height10,
+
+                        /// [Phone number input field]
+                        Form(
+                          key: _phoneNoKey,
+                          child: InternationalPhoneNumberInput(
+                            ignoreBlank: true,
+                            initialValue: PhoneNumber(
+                                isoCode: 'IN',
+                                phoneNumber: '',
+                                dialCode: '+91'),
+                            textFieldController: phoneController,
+                            maxLength: 12,
+                            onInputChanged: (value) {
+                              phoneNo = value.toString();
+                            },
+                            validator: (phone) {
+                              print(phoneController.value.text
+                                  .replaceAll(' ', ''));
+                              if (phoneController.value.text.isEmpty ||
+                                  phoneController.value.text
+                                          .replaceAll(' ', '')
+                                          .length !=
+                                      10) {
+                                return 'Invalid Phone Number';
+                              } else {
+                                return null;
+                              }
+                            },
+                            inputBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            keyboardType: TextInputType.phone,
+                            selectorConfig: SelectorConfig(
+                              selectorType: PhoneInputSelectorType.DIALOG,
+                              showFlags: true,
+                              setSelectorButtonAsPrefixIcon: false,
+                            ),
+                          ),
+                        ),
+                        height20,
+
+                        /// [Login Now Button]
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: CustomButton(
+                              text: 'Login Now',
+                              onpressed: () async {
+                                if (_phoneNoKey.currentState!.validate()) {
+                                  setState(() {
+                                    _loading = true;
+                                  });
+                                  await makerRef.get().then((docs) => {
+                                        if (docs != null)
+                                          {
+                                            docs.docs.forEach((document) {
+                                              if (phoneNo == document.id)
+                                                isUser = true;
+                                            }),
+                                          }
+                                      });
+                                  if (isUser) {
+                                    setState(() {
+                                      _loading = false;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OTPVerification(phoneNo, isUser),
+                                      ),
+                                    );
+                                  } else {
+                                    setState(() {
+                                      _loading = false;
+                                    });
+                                    Fluttertoast.showToast(
+                                        msg: 'User not registered');
+                                  }
+                                }
+                              }),
+                        ),
+                        height10,
+                        Row(
+                          children: [
+                            CustomText(text: 'Not registered?  '),
+
+                            /// [Register text link]
+                            InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: CustomText(
+                                text: 'Register Now',
+                                color: primaryGreen,
+                              ),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(child: Divider()),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(text: 'or'),
+                            ),
+                            Expanded(child: Divider()),
+                          ],
+                        ),
+                        height20,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            /// [Email button]
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.grey),
+                              ),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.email_outlined),
+                              ),
+                            ),
+                            width20,
+
+                            /// [More button]
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.grey),
+                              ),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.more_horiz),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                  height10,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomText(
+                        text: 'By continuining, you agree to our',
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                      CustomText(
+                        text:
+                            'Terms of Serivce  Privacy Policy  Content Policy',
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                    ],
+                  )
                 ],
-              )
+              ),
+              _loading
+                  ? Positioned(
+                      right: 1,
+                      left: 1,
+                      top: 1,
+                      bottom: 1,
+                      child: Align(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : Container()
             ],
           ),
         ),

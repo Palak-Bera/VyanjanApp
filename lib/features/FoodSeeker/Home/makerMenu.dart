@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cart/flutter_cart.dart';
 import 'package:flutter_number_picker/flutter_number_picker.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/resources/colors.dart';
@@ -7,16 +8,20 @@ import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
+typedef flutter_cart = void Function(FlutterCart);
+
 /// Screen for [Available items] details for particular restaurent
 class MakerMenu extends StatefulWidget {
+  flutter_cart callback;
   final String makerName;
   final String makerAddress;
   final String makerPhoneNo;
-  const MakerMenu(
+  MakerMenu(
       {Key? key,
       required this.makerName,
       required this.makerAddress,
-      required this.makerPhoneNo})
+      required this.makerPhoneNo,
+      required this.callback})
       : super(key: key);
 
   @override
@@ -31,6 +36,9 @@ class _MakerMenuState extends State<MakerMenu> {
 
   List makerMenuList = [];
   int quantity = 0, index = -1;
+
+  bool _loading = true;
+
   // late List<bool> flag;
 
   @override
@@ -49,6 +57,7 @@ class _MakerMenuState extends State<MakerMenu> {
                 .indexWhere((e) => e.productName == element.get('name'));
             print('index' + index.toString());
             setState(() {
+              _loading = false;
               makerMenuList.add({
                 'dishName': element.get('name'),
                 'description': element.get('description'),
@@ -70,122 +79,168 @@ class _MakerMenuState extends State<MakerMenu> {
         elevation: 0.0,
         backgroundColor: white,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomText(
-                      text: widget.makerName,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: widget.makerName,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        CustomText(
+                          text: "Pizza, FastFood",
+                          fontSize: 16,
+                          color: grey,
+                        ),
+                        Container(
+                          child: CustomText(
+                            text: widget.makerAddress,
+                            softwrap: true,
+                            fontSize: 16,
+                            color: grey,
+                          ),
+                        )
+                      ],
                     ),
-                    CustomText(
-                      text: "Pizza, FastFood",
-                      fontSize: 16,
-                      color: grey,
-                    ),
-                    CustomText(
-                      text: 'Address',
-                      softwrap: true,
-                      fontSize: 16,
-                      color: grey,
-                    )
                   ],
                 ),
-              ],
-            ),
-          ),
-          new Container(
-            margin: const EdgeInsets.only(left: 15.0, right: 10.0),
-            child: Divider(
-              color: Colors.black,
-            ),
-          ),
-          height20,
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-          //   child: Container(
-          //     height: 30.0,
-          //     child: ListView(
-          //       scrollDirection: Axis.horizontal,
-          //       children: [
-          //         Tag(
-          //           text: 'New Arrival',
-          //           onTap: () {},
-          //         ),
-          //         Tag(
-          //           text: 'Offers',
-          //           onTap: () {},
-          //         ),
-          //         Tag(
-          //           text: 'Fast Delivery',
-          //           onTap: () {},
-          //         ),
-          //         Tag(
-          //           text: 'More',
-          //           onTap: () {},
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // height20,
-          // Container(
-          //   width: double.infinity,
-          //   height: 30.0,
-          //   color: Colors.grey[200],
-          //   child: ListView(
-          //     scrollDirection: Axis.horizontal,
-          //     children: [
-          //       VarietyTag(text: "Pizza", onTap: () {}),
-          //       VarietyTag(text: "Sandwich", onTap: () {}),
-          //       VarietyTag(text: "Burger", onTap: () {}),
-          //       VarietyTag(text: "Hot Dogs", onTap: () {}),
-          //       VarietyTag(text: "Garlic Bread", onTap: () {})
-          //     ],
-          //   ),
-          // ),
-          // height20,
+              ),
+              new Container(
+                margin: const EdgeInsets.only(left: 15.0, right: 10.0),
+                child: Divider(
+                  color: Colors.black,
+                ),
+              ),
+              height20,
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+              //   child: Container(
+              //     height: 30.0,
+              //     child: ListView(
+              //       scrollDirection: Axis.horizontal,
+              //       children: [
+              //         Tag(
+              //           text: 'New Arrival',
+              //           onTap: () {},
+              //         ),
+              //         Tag(
+              //           text: 'Offers',
+              //           onTap: () {},
+              //         ),
+              //         Tag(
+              //           text: 'Fast Delivery',
+              //           onTap: () {},
+              //         ),
+              //         Tag(
+              //           text: 'More',
+              //           onTap: () {},
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              // height20,
+              // Container(
+              //   width: double.infinity,
+              //   height: 30.0,
+              //   color: Colors.grey[200],
+              //   child: ListView(
+              //     scrollDirection: Axis.horizontal,
+              //     children: [
+              //       VarietyTag(text: "Pizza", onTap: () {}),
+              //       VarietyTag(text: "Sandwich", onTap: () {}),
+              //       VarietyTag(text: "Burger", onTap: () {}),
+              //       VarietyTag(text: "Hot Dogs", onTap: () {}),
+              //       VarietyTag(text: "Garlic Bread", onTap: () {})
+              //     ],
+              //   ),
+              // ),
+              // height20,
 
-          /// [Search option for Food items]
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextFormField(
-              onChanged: (value) {},
-              decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: primaryGreen,
-                ),
-                hintText: 'Search within the menu',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(color: grey),
+              /// [Search option for Food items]
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  onChanged: (value) {},
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: primaryGreen,
+                    ),
+                    hintText: 'Search within the menu',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(color: grey),
+                    ),
+                  ),
+                  keyboardType: TextInputType.text,
+                  cursorColor: primaryGreen,
                 ),
               ),
-              keyboardType: TextInputType.text,
-              cursorColor: primaryGreen,
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: ListView.builder(
+                    itemBuilder: _buildAvailableItemCard,
+                    itemCount: makerMenuList.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    // physics: ClampingScrollPhysics(),
+                  ),
+                ),
+              )
+            ],
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: ListView.builder(
-                itemBuilder: _buildAvailableItemCard,
-                itemCount: makerMenuList.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                // physics: ClampingScrollPhysics(),
-              ),
-            ),
-          )
+          cart.cartItem.length > 0
+              ? Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    color: primaryGreen,
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.pushNamed(context, seekerCartRoute);
+                      },
+                      title: Text(
+                        cart.cartItem.length.toString() + ' items',
+                        style: TextStyle(
+                            color: white, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        '₹ ' + cart.getTotalAmount().toString(),
+                        style: TextStyle(color: white),
+                      ),
+                      trailing: Icon(
+                        Icons.navigate_next,
+                        color: white,
+                        size: 35.0,
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
+          _loading
+              ? Positioned(
+                  right: 1,
+                  left: 1,
+                  top: 1,
+                  bottom: 1,
+                  child: Align(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : Container()
         ],
       ),
     );
@@ -197,216 +252,34 @@ class _MakerMenuState extends State<MakerMenu> {
 
   Widget _buildAvailableItemCard(BuildContext context, int index) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height;
+    var screenHeight = MediaQuery.of(context).size.height * 0.5;
 
     /// [Bottom Modelsheet ] function
-    // void showsheet() {
-    //   showModalBottomSheet(
-    //       context: context,
-    //       shape: RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.vertical(
-    //           top: Radius.circular(25),
-    //         ),
-    //       ),
-    //       isScrollControlled: true,
-    //       builder: (context) {
-    //         return Container(
-    //           height: screenHeight / 1.25,
-    //           child: SingleChildScrollView(
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 Stack(
-    //                   children: [
-    //                     Image.asset(
-    //                       makerList[index]["imgpath"],
-    //                     ),
-    //                     Center(
-    //                       child: Padding(
-    //                         padding: const EdgeInsets.only(top: 8),
-    //                         child: InkWell(
-    //                           onTap: () {
-    //                             Navigator.pop(context);
-    //                           },
-    //                           child: Container(
-    //                             height: 30,
-    //                             width: 30,
-    //                             decoration: BoxDecoration(
-    //                                 shape: BoxShape.circle,
-    //                                 color: Colors.white),
-    //                             child: Icon(
-    //                               Icons.close,
-    //                               color: grey,
-    //                             ),
-    //                           ),
-    //                         ),
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //                 height20,
-    //                 Padding(
-    //                   padding: EdgeInsets.symmetric(horizontal: 20),
-    //                   child: Column(
-    //                     crossAxisAlignment: CrossAxisAlignment.start,
-    //                     children: [
-    //                       CustomText(
-    //                         text: makerList[index]["name"],
-    //                         fontSize: 20,
-    //                         fontWeight: FontWeight.w500,
-    //                       ),
-    //                       Divider(),
-    //                       CustomText(
-    //                         text: "Select Size",
-    //                         fontSize: 18,
-    //                         fontWeight: FontWeight.w500,
-    //                       ),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           CustomText(text: "Medium"),
-    //                           Row(
-    //                             children: [
-    //                               CustomText(text: "Rs. 110"),
-    //                               Radio(
-    //                                 value: 'medium',
-    //                                 groupValue: selectsize,
-    //                                 onChanged: (val) {
-    //                                   setState(() {
-    //                                     selectsize = val.toString();
-    //                                     print(selectsize);
-    //                                   });
-    //                                 },
-    //                                 activeColor: primaryGreen,
-    //                               ),
-    //                             ],
-    //                           )
-    //                         ],
-    //                       ),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           CustomText(text: "Large"),
-    //                           Row(
-    //                             children: [
-    //                               CustomText(text: "Rs. 140"),
-    //                               Radio(
-    //                                 value: 'large',
-    //                                 groupValue: selectsize,
-    //                                 onChanged: (val) {
-    //                                   setState(() {
-    //                                     selectsize = val.toString();
-    //                                     print(selectsize);
-    //                                   });
-    //                                 },
-    //                                 activeColor: primaryGreen,
-    //                               ),
-    //                             ],
-    //                           ),
-    //                         ],
-    //                       ),
-    //                       Divider(),
-    //                       CustomText(
-    //                         text: "Extra",
-    //                         fontSize: 18,
-    //                         fontWeight: FontWeight.w500,
-    //                       ),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           CustomText(text: "Cheese"),
-    //                           Row(
-    //                             children: [
-    //                               CustomText(text: "Rs. 45"),
-    //                               Checkbox(
-    //                                 value: extracheese,
-    //                                 checkColor: white,
-    //                                 activeColor: primaryGreen,
-    //                                 onChanged: (val) {
-    //                                   extracheese == true
-    //                                       ? extracheese = false
-    //                                       : extracheese = true;
-    //                                 },
-    //                               )
-    //                             ],
-    //                           ),
-    //                         ],
-    //                       ),
-    //                       Divider(),
-    //                       Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           Container(
-    //                             decoration: BoxDecoration(
-    //                               border: Border.all(
-    //                                 width: 1.0,
-    //                                 color: primaryGreen,
-    //                                 // style:
-    //                               ),
-    //                             ),
-    //                             child: Padding(
-    //                               padding: const EdgeInsets.symmetric(
-    //                                   horizontal: 8, vertical: 3),
-    //                               child: Row(
-    //                                 children: [
-    //                                   InkWell(
-    //                                     child: Icon(
-    //                                       Icons.remove,
-    //                                       color: primaryGreen,
-    //                                     ),
-    //                                     onTap: () {
-    //                                       setState(() {
-    //                                         (cartIteam <= 1)
-    //                                             ? cartIteam = 1
-    //                                             : cartIteam--;
-    //                                       });
-    //                                     },
-    //                                   ),
-    //                                   SizedBox(
-    //                                     width: 10,
-    //                                   ),
-    //                                   CustomText(
-    //                                     text: "$cartIteam",
-    //                                     color: primaryGreen,
-    //                                     fontSize: 20,
-    //                                   ),
-    //                                   SizedBox(
-    //                                     width: 10,
-    //                                   ),
-    //                                   InkWell(
-    //                                     child: Icon(
-    //                                       Icons.add,
-    //                                       color: primaryGreen,
-    //                                     ),
-    //                                     onTap: () {
-    //                                       setState(() {
-    //                                         cartIteam++;
-    //                                       });
-    //                                     },
-    //                                   ),
-    //                                 ],
-    //                               ),
-    //                             ),
-    //                           ),
-    //                           Container(
-    //                             width: screenWidth / 2,
-    //                             child: CustomButton(
-    //                                 text: "Add Item for Rs. 110",
-    //                                 onpressed: () {
-    //                                   Navigator.pop(context);
-    //                                 }),
-    //                           ),
-    //                         ],
-    //                       )
-    //                     ],
-    //                   ),
-    //                 )
-    //               ],
-    //             ),
-    //           ),
-    //         );
-    //       });
-    // }
+    void showsheet() {
+      showModalBottomSheet(
+          context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(10),
+              bottom: Radius.circular(10),
+            ),
+          ),
+          // isScrollControlled: true,
+          builder: (context) {
+            return Container(
+              color: white,
+              height: screenHeight,
+              child: ListTile(
+                title: Column(
+                  children: [Text('1 item'), Text('Rs. 100')],
+                ),
+                trailing: Row(
+                  children: [Text('Next'), Icon(Icons.navigate_next)],
+                ),
+              ),
+            );
+          });
+    }
 
     return Padding(
       padding: const EdgeInsets.only(top: 15),
@@ -469,7 +342,7 @@ class _MakerMenuState extends State<MakerMenu> {
                                 color: primaryGreen,
                               ),
                               onPressed: () {
-                                // showsheet();
+                                //showsheet();
                                 if (cart.cartItem.isEmpty) {
                                   preferences.setString(
                                       'cartMakerItems', widget.makerName);
@@ -481,7 +354,8 @@ class _MakerMenuState extends State<MakerMenu> {
                                       unitPrice: int.parse(
                                           makerMenuList[index]['price']));
                                   setState(() {
-                                    makerMenuList[index]['quantity'] = 0;
+                                    widget.callback(cart);
+                                    makerMenuList[index]['quantity'] = 1;
                                   });
                                 } else {
                                   if (preferences.getString('cartMakerItems') !=
@@ -526,6 +400,9 @@ class _MakerMenuState extends State<MakerMenu> {
                                                       i < makerMenuList.length;
                                                       i++) {
                                                     setState(() {
+                                                      preferences.setString(
+                                                          'cartMakerItems',
+                                                          widget.makerName);
                                                       makerMenuList[i]
                                                           ['quantity'] = 0;
                                                     });
@@ -542,6 +419,7 @@ class _MakerMenuState extends State<MakerMenu> {
                                                               ['price']));
 
                                                   setState(() {
+                                                    widget.callback(cart);
                                                     makerMenuList[index]
                                                         ['quantity'] = 1;
                                                   });
@@ -562,6 +440,7 @@ class _MakerMenuState extends State<MakerMenu> {
                                             makerMenuList[index]['price']));
                                   }
                                   setState(() {
+                                    widget.callback(cart);
                                     makerMenuList[index]['quantity'] = 1;
                                   });
                                 }
@@ -595,6 +474,7 @@ class _MakerMenuState extends State<MakerMenu> {
                                           ['dishName'],
                                       quantity: int.parse(value.toString()));
                                   setState(() {
+                                    widget.callback(cart);
                                     makerMenuList[index]['quantity'] = value;
                                   });
 

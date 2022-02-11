@@ -90,7 +90,7 @@ class _SeekerLoginState extends State<SeekerLogin> {
                           text: 'Login Now',
                           onpressed: () async {
                             if (_phoneNoKey.currentState!.validate()) {
-                              await makerRef.get().then((docs) => {
+                              await seekerRef.get().then((docs) => {
                                     if (docs != null)
                                       {
                                         docs.docs.forEach((document) {

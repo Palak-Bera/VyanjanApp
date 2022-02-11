@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_app/features/CommonScreens/otpVerification.dart';
@@ -22,6 +23,8 @@ class _MakerRegisterState extends State<MakerRegister> {
   String phoneNo = '';
   bool isUser = false;
 
+  bool _loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -34,82 +37,111 @@ class _MakerRegisterState extends State<MakerRegister> {
       body: SafeArea(
         child: SingleChildScrollView(
           reverse: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: Stack(
             children: [
-              /// Introductory image in the beginning
-              Container(
-                child: Image.asset('assets/images/f9.png'),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: 'Register as Food Maker',
-                      fontSize: 18.0,
-                    ),
-                    height10,
-
-                    /// [Phone number input field]
-                    Form(
-                      key: _phoneNoKey,
-                      child: InternationalPhoneNumberInput(
-                        ignoreBlank: true,
-                        initialValue: PhoneNumber(
-                            isoCode: 'IN', phoneNumber: '', dialCode: '+91'),
-                        textFieldController: phoneController,
-                        maxLength: 12,
-                        onInputChanged: (value) {
-                          phoneNo = value.toString();
-                        },
-                        validator: (phone) {
-                          print(phoneController.value.text.replaceAll(' ', ''));
-                          if (phoneController.value.text.isEmpty ||
-                              phoneController.value.text
-                                      .replaceAll(' ', '')
-                                      .length !=
-                                  10) {
-                            return 'Invalid Phone Number';
-                          } else {
-                            return null;
-                          }
-                        },
-                        inputBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  /// Introductory image in the beginning
+                  Container(
+                    child: Image.asset('assets/images/f9.png'),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: 'Register as Food Maker',
+                          fontSize: 18.0,
                         ),
-                        keyboardType: TextInputType.phone,
-                        selectorConfig: SelectorConfig(
-                          selectorType: PhoneInputSelectorType.DIALOG,
-                          showFlags: true,
-                          setSelectorButtonAsPrefixIcon: false,
-                        ),
-                      ),
-                    ),
-                    height20,
+                        height10,
 
-                    /// [Register Now Button]
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: CustomButton(
-                          text: 'Register Now',
-                          onpressed: () {
-                            if (_phoneNoKey.currentState!.validate()) {
-                              isUser = false;
-                              makerRef.get().then((docs) => {
-                                    if (docs != null)
-                                      {
-                                        docs.docs.forEach((document) {
-                                          if (phoneNo == document.id) {
-                                            isUser = true;
-                                            Fluttertoast.showToast(
-                                                msg: 'User already exists');
-                                          }
-                                        }),
-                                        if (!isUser)
+                        /// [Phone number input field]
+                        Form(
+                          key: _phoneNoKey,
+                          child: InternationalPhoneNumberInput(
+                            ignoreBlank: true,
+                            initialValue: PhoneNumber(
+                                isoCode: 'IN',
+                                phoneNumber: '',
+                                dialCode: '+91'),
+                            textFieldController: phoneController,
+                            maxLength: 12,
+                            onInputChanged: (value) {
+                              phoneNo = value.toString();
+                            },
+                            validator: (phone) {
+                              print(phoneController.value.text
+                                  .replaceAll(' ', ''));
+                              if (phoneController.value.text.isEmpty ||
+                                  phoneController.value.text
+                                          .replaceAll(' ', '')
+                                          .length !=
+                                      10) {
+                                return 'Invalid Phone Number';
+                              } else {
+                                return null;
+                              }
+                            },
+                            inputBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            keyboardType: TextInputType.phone,
+                            selectorConfig: SelectorConfig(
+                              selectorType: PhoneInputSelectorType.DIALOG,
+                              showFlags: true,
+                              setSelectorButtonAsPrefixIcon: false,
+                            ),
+                          ),
+                        ),
+                        height20,
+
+                        /// [Register Now Button]
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: CustomButton(
+                              text: 'Register Now',
+                              onpressed: () {
+                                if (_phoneNoKey.currentState!.validate()) {
+                                  isUser = false;
+                                  setState(() {
+                                    _loading = true;
+                                  });
+                                  makerRef.get().then((docs) => {
+                                        if (docs != null)
                                           {
+                                            docs.docs.forEach((document) {
+                                              if (phoneNo == document.id) {
+                                                isUser = true;
+                                                setState(() {
+                                                  _loading = false;
+                                                });
+                                                Fluttertoast.showToast(
+                                                    msg: 'User already exists');
+                                              }
+                                            }),
+                                            if (!isUser)
+                                              {
+                                                setState(() {
+                                                  _loading = false;
+                                                }),
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        OTPVerification(
+                                                            phoneNo, isUser),
+                                                  ),
+                                                )
+                                              }
+                                          }
+                                        else
+                                          {
+                                            setState(() {
+                                              _loading = false;
+                                            }),
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -118,96 +150,100 @@ class _MakerRegisterState extends State<MakerRegister> {
                                                           phoneNo, isUser),
                                                 ))
                                           }
-                                      }
-                                    else
-                                      {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OTPVerification(
-                                                      phoneNo, isUser),
-                                            ))
-                                      }
-                                  });
-                            }
-                          }),
-                    ),
-                    height10,
-                    Row(
-                      children: [
-                        CustomText(text: 'Already registered?  '),
+                                      });
+                                }
+                              }),
+                        ),
+                        height10,
+                        Row(
+                          children: [
+                            CustomText(text: 'Already registered?  '),
 
-                        /// [Login text link]
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, foodMakerLoginRoute);
-                          },
-                          child: CustomText(
-                            text: 'Login Now',
-                            color: primaryGreen,
-                          ),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(child: Divider()),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomText(text: 'or'),
+                            /// [Login text link]
+                            InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, foodMakerLoginRoute);
+                              },
+                              child: CustomText(
+                                text: 'Login Now',
+                                color: primaryGreen,
+                              ),
+                            )
+                          ],
                         ),
-                        Expanded(child: Divider()),
-                      ],
-                    ),
-                    height20,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        /// [Email button]
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey),
-                          ),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.email_outlined),
-                          ),
+                        Row(
+                          children: [
+                            Expanded(child: Divider()),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CustomText(text: 'or'),
+                            ),
+                            Expanded(child: Divider()),
+                          ],
                         ),
-                        width20,
+                        height20,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            /// [Email button]
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.grey),
+                              ),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.email_outlined),
+                              ),
+                            ),
+                            width20,
 
-                        /// [More button]
-                        Container(
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.grey)),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.more_horiz),
-                          ),
+                            /// [More button]
+                            Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.grey)),
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.more_horiz),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              height10,
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CustomText(
-                    text: 'By continuining, you agree to our',
-                    color: Colors.grey,
-                    fontSize: 10.0,
                   ),
-                  CustomText(
-                    text: 'Terms of Serivce  Privacy Policy  Content Policy',
-                    color: Colors.grey,
-                    fontSize: 10.0,
-                  ),
+                  height10,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomText(
+                        text: 'By continuining, you agree to our',
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                      CustomText(
+                        text:
+                            'Terms of Serivce  Privacy Policy  Content Policy',
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                      ),
+                    ],
+                  )
                 ],
-              )
+              ),
+              _loading
+                  ? Positioned(
+                      right: 1,
+                      left: 1,
+                      top: 1,
+                      bottom: 1,
+                      child: Align(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : Container()
             ],
           ),
         ),

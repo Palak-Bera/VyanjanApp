@@ -40,6 +40,9 @@ initializeSharedPreference() async {
   return prefs;
 }
 
+///cartMakerItems
+///UserState
+///status
 var preferences;
 
 /// Google Map API Key

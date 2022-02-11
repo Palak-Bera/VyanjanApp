@@ -1,19 +1,22 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:flutter_geocoder/geocoder.dart';
-import 'package:food_app/features/FoodSeeker/Home/searchBar.dart';
+
 import 'package:food_app/fixtures/dummy_data.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
-import 'package:get/get.dart';
+
 import 'package:location/location.dart';
 
 import 'makerMenu.dart';
 
-/// [Search Food Page] for [Food seeker] rendred when he/she is authenticated successfully
+/// [Search Food Page] for [Food seeker] rendered when he/she is authenticated successfully
 class SeekerHome extends StatefulWidget {
   const SeekerHome({Key? key}) : super(key: key);
 
@@ -26,6 +29,7 @@ var cart = FlutterCart();
 class _SeekerHomeState extends State<SeekerHome> {
   String _city = '';
   String _country = '';
+  String _name = '';
 
   bool flag = true;
 
@@ -34,11 +38,24 @@ class _SeekerHomeState extends State<SeekerHome> {
   late QuerySnapshot querySnapshot;
   bool isExecuted = false;
 
+  bool _loading = true;
+
   @override
   void initState() {
     super.initState();
     getLocation();
-    //getLocalFoodMakers();
+    getName();
+  }
+
+  void getName() async {
+    await seekerRef
+        .doc(auth.currentUser!.phoneNumber)
+        .snapshots()
+        .forEach((element) {
+      setState(() {
+        _name = element.get('firstName') + ' ' + element.get('lastName');
+      });
+    });
   }
 
   getLocalFoodMakers() async {
@@ -52,6 +69,7 @@ class _SeekerHomeState extends State<SeekerHome> {
                       setState(() {
                         availableMaker.add(element);
                         makerList.add(element.get('name'));
+                        _loading = false;
                       });
                     }
                   }
@@ -113,6 +131,11 @@ class _SeekerHomeState extends State<SeekerHome> {
 
   @override
   Widget build(BuildContext context) {
+    // setState(() {
+    //   print('jf');
+    //   cart;
+    //   cart.getTotalAmount();
+    // });
     return Scaffold(
       backgroundColor: white,
       body: !flag
@@ -164,34 +187,48 @@ class _SeekerHomeState extends State<SeekerHome> {
                             ),
 
                             /// [Username]
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text('Name'),
-                                      Text(
-                                        'Food Seeker',
-                                        style: TextStyle(color: primaryGreen),
-                                      ),
-                                    ],
-                                  ),
-                                  width10,
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, seekerDashboardRoute);
-                                    },
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          'assets/images/person.jpeg'),
+
+                            auth.currentUser != null
+                                ? Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(_name),
+                                            Text(
+                                              'Food Seeker',
+                                              style: TextStyle(
+                                                  color: primaryGreen),
+                                            ),
+                                          ],
+                                        ),
+                                        width10,
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, seekerDashboardRoute);
+                                          },
+                                          child: CircleAvatar(
+                                            backgroundColor: primaryGreen,
+                                            child: Image.asset(
+                                                'assets/food_icons/' +
+                                                    (Random().nextInt(10) + 1)
+                                                        .toString() +
+                                                    '.png'),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: primaryGreen,
+                                    child: Image.asset('assets/food_icons/' +
+                                        (Random().nextInt(10) + 1).toString() +
+                                        '.png'),
+                                  )
                           ],
                         ),
 
@@ -201,6 +238,7 @@ class _SeekerHomeState extends State<SeekerHome> {
                             Navigator.pushNamed(
                                 context, availableFoodMakerRoute);
                           },
+                          readOnly: true,
                           onChanged: (value) {},
                           // onFieldSubmitted: (value) {
                           //   Navigator.pushNamed(
@@ -271,8 +309,14 @@ class _SeekerHomeState extends State<SeekerHome> {
                                             availableMaker[index].get('name'),
                                         makerAddress: availableMaker[index]
                                             .get('address'),
-                                        makerPhoneNo: availableMaker[index]
-                                            .get('phoneNo'),
+                                        makerPhoneNo: availableMaker[index].get(
+                                          'phoneNo',
+                                        ),
+                                        callback: (value) {
+                                          setState(() {
+                                            cart = value;
+                                          });
+                                        },
                                       ),
                                     ),
                                   );
@@ -289,7 +333,8 @@ class _SeekerHomeState extends State<SeekerHome> {
                                       ),
                                       height10,
                                       CustomText(
-                                          text: makerList.elementAt(index)),
+                                        text: makerList.elementAt(index),
+                                      ),
                                       height10,
                                     ],
                                   ),
@@ -367,18 +412,46 @@ class _SeekerHomeState extends State<SeekerHome> {
                     ),
                   ),
                 ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: ElevatedButton(
-                    child: Text('Cart'),
-                    onPressed: () {
-                      print('dfg');
-                      Navigator.pushNamed(context, seekerCartRoute);
-                    },
-                  ),
-                ),
+                cart.cartItem.length > 0
+                    ? Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          color: primaryGreen,
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.pushNamed(context, seekerCartRoute);
+                            },
+                            title: Text(
+                              cart.cartItem.length.toString() + ' items',
+                              style: TextStyle(
+                                  color: white, fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              '₹ ' + cart.getTotalAmount().toString(),
+                              style: TextStyle(color: white),
+                            ),
+                            trailing: Icon(
+                              Icons.navigate_next,
+                              size: 35.0,
+                              color: white,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
+                _loading
+                    ? Positioned(
+                        right: 1,
+                        left: 1,
+                        top: 1,
+                        bottom: 1,
+                        child: Align(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : Container()
               ],
             ),
     );

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_app/features/FoodSeeker/Home/widgets/itemCard.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
+import 'package:location/location.dart';
+import 'package:food_app/features/CommonScreens/googleMapScreen.dart' as map;
 
 /// Page for [user details]
 class SeekerDashboard extends StatefulWidget {
@@ -94,18 +97,18 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                         CustomText(text: "Your Address Details", fontSize: 15),
                       ],
                     ),
-                    CircleAvatar(
-                      backgroundColor: primaryGreen,
-                      radius: 45.0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: CircleAvatar(
-                          radius: 45.0,
-                          backgroundImage:
-                              AssetImage('assets/images/person.jpeg'),
-                        ),
-                      ),
-                    ),
+                    // CircleAvatar(
+                    //   backgroundColor: primaryGreen,
+                    //   radius: 45.0,
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(5.0),
+                    //     child: CircleAvatar(
+                    //       radius: 45.0,
+                    //       backgroundImage:
+                    //           AssetImage('assets/images/person.jpeg'),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
 
@@ -128,10 +131,33 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                     color: primaryGreen,
                     fontSize: 15,
                   ),
-                  trailing: CustomText(
-                    text: "CHANGE",
-                    color: primaryGreen,
-                    fontSize: 16,
+                  trailing: GestureDetector(
+                    onTap: () async {
+                      Location _location = new Location();
+                      var _locationData = await _location.getLocation();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => map.GoogleMapScreen(
+                            lat: _locationData.latitude!,
+                            long: _locationData.longitude!,
+                            callback: (value) {
+                              var seekerCity = value.split(',');
+                              setState(() {
+                                _addressController.text = value;
+                                _city = seekerCity[seekerCity.length - 3];
+                                print('CITY: ' + _city);
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    child: CustomText(
+                      text: "CHANGE",
+                      color: primaryGreen,
+                      fontSize: 16,
+                    ),
                   ),
                   horizontalTitleGap: 0,
                 ),
@@ -139,7 +165,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                 height10,
                 // Complete address
                 CustomText(
-                  text: "Complete Address*",
+                  text: "Delivery Address*",
                   fontSize: 15,
                 ),
                 TextField(
@@ -149,7 +175,8 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryGreen)),
+                      borderSide: BorderSide(color: primaryGreen),
+                    ),
                     focusColor: primaryGreen,
                     border: new OutlineInputBorder(
                       borderSide: new BorderSide(),
@@ -197,9 +224,10 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                     //   color: primaryGreen,
                     //   fontSize: 12.0,
                     // ),
-                    hintText: 'Phone Number',
+                    label: Text('Phone Number'),
                     focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: primaryGreen)),
+                      borderSide: BorderSide(color: primaryGreen),
+                    ),
                   ),
                   cursorColor: primaryGreen,
                   keyboardType: TextInputType.number,
@@ -214,36 +242,48 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                     //   color: primaryGreen,
                     //   fontSize: 12.0,
                     // ),
-                    hintText: 'Email Address',
+                    label: Text('Email Address'),
                     focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: primaryGreen)),
+                      borderSide: BorderSide(color: primaryGreen),
+                    ),
                   ),
                   cursorColor: primaryGreen,
                   keyboardType: TextInputType.emailAddress,
                 ),
 
                 // Check Box
-                Row(
-                  children: <Widget>[
-                    Checkbox(
-                      value: checkSelected,
-                      checkColor: white,
-                      activeColor: primaryGreen,
-                      onChanged: (value) {
-                        setState(() {
-                          print(value!);
-                          checkSelected = value;
+                // Row(
+                //   children: <Widget>[
+                //     Checkbox(
+                //       value: checkSelected,
+                //       checkColor: white,
+                //       activeColor: primaryGreen,
+                //       onChanged: (value) {
+                //         setState(() {
+                //           print(value!);
+                //           checkSelected = value;
+                //         });
+                //       },
+                //       fillColor: MaterialStateProperty.all(primaryGreen),
+                //     ),
+                //     Expanded(
+                //       child: CustomText(
+                //         text: "Save this details for your future orders",
+                //         softwrap: true,
+                //       ),
+                //     )
+                //   ],
+                // ),
+
+                ElevatedButton(
+                  onPressed: () {
+                    auth.signOut().then((value) => {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, seekerHomeRoute, (route) => false)
                         });
-                      },
-                      fillColor: MaterialStateProperty.all(primaryGreen),
-                    ),
-                    Expanded(
-                        child: CustomText(
-                      text: "Save this details for your future orders",
-                      softwrap: true,
-                    ))
-                  ],
-                ),
+                  },
+                  child: Text('Logout'),
+                )
               ],
             ),
           ),
@@ -254,7 +294,16 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: CustomButton(
               text: "Save Changes",
-              onpressed: () {},
+              onpressed: () {
+                var seekerCity = _addressController.value.text.split(',');
+                seekerRef.doc(auth.currentUser!.phoneNumber).update({
+                  'address': _addressController.value.text,
+                  'city': seekerCity[seekerCity.length - 3],
+                  'email': _emailController.value.text
+                }).then((value) => {
+                      Fluttertoast.showToast(msg: 'Changes Saved'),
+                    });
+              },
             ),
           ),
         ),

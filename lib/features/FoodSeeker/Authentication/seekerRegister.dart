@@ -88,7 +88,7 @@ class _SeekerRegisterState extends State<SeekerRegister> {
                           onpressed: () {
                             if (_phoneNoKey.currentState!.validate()) {
                               isUser = false;
-                              makerRef.get().then((docs) => {
+                              seekerRef.get().then((docs) => {
                                     if (docs != null)
                                       {
                                         docs.docs.forEach((document) {

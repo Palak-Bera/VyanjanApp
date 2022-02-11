@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/features/FoodSeeker/Home/makerMenu.dart';
 import 'package:food_app/features/FoodSeeker/Home/searchBar.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/features/FoodSeeker/Home/widgets/itemCard.dart';
 import 'package:food_app/fixtures/dummy_data.dart';
 import 'package:food_app/resources/colors.dart';
@@ -19,7 +21,7 @@ class AvailableFoodMaker extends StatefulWidget {
 
 class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
   /// value which returned from [Search for food]
-  String value = "Sandwich";
+  //String value = "Sandwich";
 
   late QuerySnapshot querySnapshot;
   bool isExecuted = false;
@@ -30,7 +32,107 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
       itemCount: querySnapshot.docs.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
-          title: Text(querySnapshot.docs[index]['name']),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MakerMenu(
+                  makerName: querySnapshot.docs[index]['name'],
+                  makerAddress: querySnapshot.docs[index]['address'],
+                  makerPhoneNo: querySnapshot.docs[index]['phoneNo'],
+                  callback: (value) {
+                    setState(() {
+                      cart = value;
+                    });
+                  },
+                ),
+              ),
+            );
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //     builder: (context) => MakerMenu(
+            //   makerName:
+            //   availableMaker[index].get('name'),
+            //   makerAddress: availableMaker[index]
+            //       .get('address'),
+            //   makerPhoneNo: availableMaker[index]
+            //       .get('phoneNo'),
+            // )
+            // )
+          },
+          title: Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  ClipRect(
+                    child: Image(
+                      image: AssetImage(makerList[index]["imgpath"]),
+                    ),
+                  ),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text: querySnapshot.docs[index]['name'],
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    color: querySnapshot.docs[index]['status']
+                                        ? primaryGreen
+                                        : grey,
+                                    size: 12,
+                                  ),
+                                  CustomText(
+                                    text: querySnapshot.docs[index]['status']
+                                        ? 'Available'
+                                        : 'Not Available',
+                                    color: querySnapshot.docs[index]['status']
+                                        ? primaryGreen
+                                        : grey,
+                                    fontSize: 14,
+                                  ),
+                                ],
+                              )
+                              // : Row(
+                              //     children: [
+                              //       Icon(
+                              //         Icons.circle,
+                              //         color: grey,
+                              //         size: 10,
+                              //       ),
+                              //       CustomText(
+                              //         text: " Not Available",
+                              //         color: grey,
+                              //         fontSize: 12,
+                              //       ),
+                              //     ],
+                              //   )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
         );
       },
     );
@@ -69,11 +171,21 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
           padding: const EdgeInsets.only(top: 15.0),
           child: TextFormField(
             controller: _searchController,
+            textCapitalization: TextCapitalization.words,
             onChanged: (value) {},
+            onFieldSubmitted: (value) {
+              SearchBar().queryData(_searchController.value.text).then((value) {
+                querySnapshot = value;
+                setState(() {
+                  isExecuted = true;
+                });
+              });
+            },
             decoration: InputDecoration(
               suffixIcon: IconButton(
                 icon: Icon(Icons.clear),
                 onPressed: () {
+                  _searchController.clear();
                   setState(() {
                     isExecuted = false;
                   });
