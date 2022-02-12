@@ -40,11 +40,6 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
                   makerName: querySnapshot.docs[index]['name'],
                   makerAddress: querySnapshot.docs[index]['address'],
                   makerPhoneNo: querySnapshot.docs[index]['phoneNo'],
-                  callback: (value) {
-                    setState(() {
-                      cart = value;
-                    });
-                  },
                 ),
               ),
             );

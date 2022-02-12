@@ -8,11 +8,10 @@ import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
-typedef flutter_cart = void Function(FlutterCart);
+//typedef MyCart = void Function(FlutterCart);
 
 /// Screen for [Available items] details for particular restaurent
 class MakerMenu extends StatefulWidget {
-  flutter_cart callback;
   final String makerName;
   final String makerAddress;
   final String makerPhoneNo;
@@ -20,8 +19,7 @@ class MakerMenu extends StatefulWidget {
       {Key? key,
       required this.makerName,
       required this.makerAddress,
-      required this.makerPhoneNo,
-      required this.callback})
+      required this.makerPhoneNo})
       : super(key: key);
 
   @override
@@ -354,7 +352,6 @@ class _MakerMenuState extends State<MakerMenu> {
                                       unitPrice: int.parse(
                                           makerMenuList[index]['price']));
                                   setState(() {
-                                    widget.callback(cart);
                                     makerMenuList[index]['quantity'] = 1;
                                   });
                                 } else {
@@ -419,7 +416,6 @@ class _MakerMenuState extends State<MakerMenu> {
                                                               ['price']));
 
                                                   setState(() {
-                                                    widget.callback(cart);
                                                     makerMenuList[index]
                                                         ['quantity'] = 1;
                                                   });
@@ -440,7 +436,6 @@ class _MakerMenuState extends State<MakerMenu> {
                                             makerMenuList[index]['price']));
                                   }
                                   setState(() {
-                                    widget.callback(cart);
                                     makerMenuList[index]['quantity'] = 1;
                                   });
                                 }
@@ -474,7 +469,6 @@ class _MakerMenuState extends State<MakerMenu> {
                                           ['dishName'],
                                       quantity: int.parse(value.toString()));
                                   setState(() {
-                                    widget.callback(cart);
                                     makerMenuList[index]['quantity'] = value;
                                   });
 

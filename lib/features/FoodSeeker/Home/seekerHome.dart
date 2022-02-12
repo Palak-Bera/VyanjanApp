@@ -131,11 +131,6 @@ class _SeekerHomeState extends State<SeekerHome> {
 
   @override
   Widget build(BuildContext context) {
-    // setState(() {
-    //   print('jf');
-    //   cart;
-    //   cart.getTotalAmount();
-    // });
     return Scaffold(
       backgroundColor: white,
       body: !flag
@@ -236,7 +231,10 @@ class _SeekerHomeState extends State<SeekerHome> {
                         TextFormField(
                           onTap: () {
                             Navigator.pushNamed(
-                                context, availableFoodMakerRoute);
+                                    context, availableFoodMakerRoute)
+                                .then((value) {
+                              setState(() {});
+                            });
                           },
                           readOnly: true,
                           onChanged: (value) {},
@@ -309,17 +307,13 @@ class _SeekerHomeState extends State<SeekerHome> {
                                             availableMaker[index].get('name'),
                                         makerAddress: availableMaker[index]
                                             .get('address'),
-                                        makerPhoneNo: availableMaker[index].get(
-                                          'phoneNo',
-                                        ),
-                                        callback: (value) {
-                                          setState(() {
-                                            cart = value;
-                                          });
-                                        },
+                                        makerPhoneNo: availableMaker[index]
+                                            .get('phoneNo'),
                                       ),
                                     ),
-                                  );
+                                  ).then((value) {
+                                    setState(() {});
+                                  });
                                 },
                                 child: Container(
                                   child: Column(
