@@ -415,10 +415,13 @@ class _SeekerHomeState extends State<SeekerHome> {
                           color: primaryGreen,
                           child: ListTile(
                             onTap: () {
-                              Navigator.pushNamed(context, seekerCartRoute);
+                              Navigator.pushNamed(context, seekerCartRoute)
+                                  .then((value) {
+                                setState(() {});
+                              });
                             },
                             title: Text(
-                              cart.cartItem.length.toString() + ' items',
+                              getItemCount().toString() + ' items',
                               style: TextStyle(
                                   color: white, fontWeight: FontWeight.bold),
                             ),

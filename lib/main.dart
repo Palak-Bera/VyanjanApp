@@ -10,6 +10,7 @@ import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerRegister.dart';
 import 'package:food_app/features/FoodSeeker/Home/availableFoodMaker.dart';
 import 'package:food_app/features/FoodSeeker/Home/makerMenu.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerCheckout.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerCart.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerDashboard.dart';
@@ -48,6 +49,7 @@ class App extends StatelessWidget {
         foodMakerRegisterRoute: (context) => MakerRegister(),
         makerDetailRoute: (context) => MakerDetails(),
         makerHomeRoute: (context) => MakerHome(),
+        seekerCheckoutRoute: (context) => SeekerCheckout(),
       },
     );
   }

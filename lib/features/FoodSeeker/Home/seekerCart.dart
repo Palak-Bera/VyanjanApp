@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_number_picker/flutter_number_picker.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
@@ -104,6 +103,7 @@ class _SeekerCartState extends State<SeekerCart> {
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                   ),
+                  height20,
 
                   /// [Choose Preference]
                   Row(
@@ -157,7 +157,7 @@ class _SeekerCartState extends State<SeekerCart> {
                         ],
                       ),
                       CustomText(
-                        text: "Rs. 50",
+                        text: "₹ 50",
                         fontSize: 16,
                       )
                     ],
@@ -178,14 +178,14 @@ class _SeekerCartState extends State<SeekerCart> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomText(text: "Item Total "),
-                        CustomText(text: "Rs. 110")
+                        CustomText(text: getItemCount().toString())
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(text: "Delivey Charge"),
-                        CustomText(text: "Rs. 50")
+                        CustomText(text: "Delivery Charges"),
+                        CustomText(text: "₹ 50")
                       ],
                     ),
                     Divider(
@@ -200,7 +200,7 @@ class _SeekerCartState extends State<SeekerCart> {
                           fontWeight: FontWeight.w500,
                         ),
                         CustomText(
-                          text: "Rs. 160",
+                          text: '₹ ' + (cart.getTotalAmount() + 50).toString(),
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                         )
@@ -222,11 +222,10 @@ class _SeekerCartState extends State<SeekerCart> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: CustomButton(
-            text: auth.currentUser != null
-                ? "Proceed for Payment"
-                : "Sign In to Continue",
+            text: auth.currentUser != null ? "Continue" : "Sign In to Continue",
             onpressed: () {
               if (auth.currentUser != null) {
+                Navigator.pushNamed(context, seekerCheckoutRoute);
               } else {
                 Navigator.pushNamed(context, foodSeekerRegisterRoute);
               }
@@ -298,6 +297,7 @@ class _SeekerCartState extends State<SeekerCart> {
                         color: primaryGreen,
                       ),
                       onValue: (value) {
+                        setState(() {});
                         cart.addToCart(
                             productId: index,
                             unitPrice: cart.cartItem[index].unitPrice,

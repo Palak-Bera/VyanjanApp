@@ -1,10 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geocoder/geocoder.dart';
-import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
-import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/resources/colors.dart';
-import 'package:food_app/routes/constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 typedef StringValue = void Function(String);

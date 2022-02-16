@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cart/flutter_cart.dart';
 import 'package:flutter_number_picker/flutter_number_picker.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/resources/colors.dart';
@@ -211,7 +210,7 @@ class _MakerMenuState extends State<MakerMenu> {
                         Navigator.pushNamed(context, seekerCartRoute);
                       },
                       title: Text(
-                        cart.cartItem.length.toString() + ' items',
+                        getItemCount().toString() + ' items',
                         style: TextStyle(
                             color: white, fontWeight: FontWeight.bold),
                       ),
@@ -244,41 +243,11 @@ class _MakerMenuState extends State<MakerMenu> {
     );
   }
 
-  Widget alertDialog(String cartMakerItems, String thisMaker) {
-    return AlertDialog();
-  }
+  // Widget alertDialog(String cartMakerItems, String thisMaker) {
+  //   return AlertDialog();
+  // }
 
   Widget _buildAvailableItemCard(BuildContext context, int index) {
-    var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height * 0.5;
-
-    /// [Bottom Modelsheet ] function
-    void showsheet() {
-      showModalBottomSheet(
-          context: context,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(10),
-              bottom: Radius.circular(10),
-            ),
-          ),
-          // isScrollControlled: true,
-          builder: (context) {
-            return Container(
-              color: white,
-              height: screenHeight,
-              child: ListTile(
-                title: Column(
-                  children: [Text('1 item'), Text('Rs. 100')],
-                ),
-                trailing: Row(
-                  children: [Text('Next'), Icon(Icons.navigate_next)],
-                ),
-              ),
-            );
-          });
-    }
-
     return Padding(
       padding: const EdgeInsets.only(top: 15),
       child: Card(
