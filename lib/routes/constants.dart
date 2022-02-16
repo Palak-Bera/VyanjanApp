@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String intialRoute = '/';
@@ -13,6 +14,7 @@ const String availableFoodMakerRoute = '/AvailableFoodMaker';
 const String makerMenuRoute = '/MakerMenu';
 const String seekerCartRoute = '/SeekerCart';
 const String seekerDashboardRoute = '/SeekerDashboard';
+const String seekerCheckoutRoute = '/SeekerCheckout';
 
 /// Routes for [Food Maker]
 const String foodMakerRegisterRoute = '/MakerRegister';
@@ -34,6 +36,14 @@ CollectionReference seekerRef =
 FirebaseAuth auth = FirebaseAuth.instance;
 
 String role = '';
+
+getItemCount() {
+  int itemCount = 0;
+  for (int i = 0; i < cart.cartItem.length; i++) {
+    itemCount += cart.cartItem[i].quantity;
+  }
+  return itemCount;
+}
 
 initializeSharedPreference() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
