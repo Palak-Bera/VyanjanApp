@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:food_app/features/FoodMaker/Authentication/makerBankDetails.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
@@ -6,6 +9,7 @@ import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:location/location.dart';
 import 'package:food_app/features/CommonScreens/googleMapScreen.dart' as map;
+import 'package:http/http.dart' as http;
 
 /// Screen for taking [Restaurant details]
 
@@ -282,12 +286,14 @@ class _MakerDetailsState extends State<MakerDetails> {
                                 : makerFinalAddress,
                             'city': makerCity[makerCity.length - 3],
                             'status': true
-                          }).then((value) => {
-                                preferences.setString('UserState', 'Maker'),
-                                preferences.setBool('status', true),
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context, makerHomeRoute, (route) => false)
-                              });
+                          }).then((value) async {
+                            // await createMakerContact(
+                            //     _nameController.value.text);
+                            //preferences.setString('UserState', 'Maker');
+                            //preferences.setBool('status', true);
+
+                            Navigator.pushNamed(context, makerBankDetailsRoute);
+                          });
                         }
                       }),
                 ),
@@ -298,6 +304,25 @@ class _MakerDetailsState extends State<MakerDetails> {
         ),
       ),
     );
+  }
+
+  createMakerContact(String makerName) async {
+    var data = {
+      "name": makerName,
+      'contact': auth.currentUser!.phoneNumber,
+      "email": ''
+    };
+
+    var url = Uri.parse('https://vyanjan.000webhostapp.com/createContact.php');
+    var res = await http.post(url, body: data);
+    if (res.statusCode == 200) {
+      var response = jsonDecode(res.body);
+      print(response['id']);
+      makerRef.doc(auth.currentUser!.phoneNumber).update({
+        'accountDetails': {'contact_id': response['id']}
+      });
+    }
+    // print('result: ' + res.body.toString());
   }
 
   getLocation() async {

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/features/FoodMaker/Authentication/makerBankDetails.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerLogin.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerRegister.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
@@ -46,6 +47,7 @@ class App extends StatelessWidget {
         seekerDashboardRoute: (context) => SeekerDashboard(),
         seekerCartRoute: (context) => SeekerCart(),
         foodMakerLoginRoute: (context) => MakerLogin(),
+        makerBankDetailsRoute: (context) => MakerBankDetails(),
         foodMakerRegisterRoute: (context) => MakerRegister(),
         makerDetailRoute: (context) => MakerDetails(),
         makerHomeRoute: (context) => MakerHome(),

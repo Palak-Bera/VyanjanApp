@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
 import 'package:flutter_geocoder/geocoder.dart';
@@ -131,6 +130,10 @@ class _SeekerHomeState extends State<SeekerHome> {
 
   @override
   Widget build(BuildContext context) {
+    if (makerList.isEmpty)
+      setState(() {
+        _loading = false;
+      });
     return Scaffold(
       backgroundColor: white,
       body: !flag
@@ -228,7 +231,7 @@ class _SeekerHomeState extends State<SeekerHome> {
                         ),
 
                         /// [Search option for Food items]
-                        TextFormField(
+                        ListTile(
                           onTap: () {
                             Navigator.pushNamed(
                                     context, availableFoodMakerRoute)
@@ -236,25 +239,15 @@ class _SeekerHomeState extends State<SeekerHome> {
                               setState(() {});
                             });
                           },
-                          readOnly: true,
-                          onChanged: (value) {},
-                          // onFieldSubmitted: (value) {
-                          //   Navigator.pushNamed(
-                          //       context, availableFoodMakerRoute);
-                          // },
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: primaryGreen,
-                            ),
-                            hintText: 'Search food',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(color: grey),
-                            ),
+                          shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(color: grey),
                           ),
-                          keyboardType: TextInputType.text,
-                          cursorColor: primaryGreen,
+                          leading: Icon(Icons.search, color: primaryGreen),
+                          title: Text(
+                            'Search food',
+                            style: TextStyle(color: grey),
+                          ),
                         ),
                         height20,
 
@@ -285,57 +278,63 @@ class _SeekerHomeState extends State<SeekerHome> {
                         // ),
                         // height20,
 
-                        Text('Food Makers'),
-
                         /// Food-Category Grid rendered [by Default]
                         Expanded(
-                          child: GridView.builder(
-                            itemCount: makerList.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3, childAspectRatio: 0.8),
-                            itemBuilder: (ctx, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  print(availableMaker[index].get('phoneNo'));
+                          child: makerList.isEmpty
+                              ? Center(
+                                  child: Text('No Food Makers Available'),
+                                )
+                              : GridView.builder(
+                                  itemCount: makerList.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          childAspectRatio: 0.8),
+                                  itemBuilder: (ctx, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        print(availableMaker[index]
+                                            .get('phoneNo'));
 
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MakerMenu(
-                                        makerName:
-                                            availableMaker[index].get('name'),
-                                        makerAddress: availableMaker[index]
-                                            .get('address'),
-                                        makerPhoneNo: availableMaker[index]
-                                            .get('phoneNo'),
-                                      ),
-                                    ),
-                                  ).then((value) {
-                                    setState(() {});
-                                  });
-                                },
-                                child: Container(
-                                  child: Column(
-                                    children: [
-                                      CircleAvatar(
-                                        minRadius: 40.0,
-                                        backgroundImage: AssetImage(
-                                          categoryList
-                                              .elementAt(index)['imgpath']!,
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => MakerMenu(
+                                              makerName: availableMaker[index]
+                                                  .get('name'),
+                                              makerAddress:
+                                                  availableMaker[index]
+                                                      .get('address'),
+                                              makerPhoneNo:
+                                                  availableMaker[index]
+                                                      .get('phoneNo'),
+                                            ),
+                                          ),
+                                        ).then((value) {
+                                          setState(() {});
+                                        });
+                                      },
+                                      child: Container(
+                                        child: Column(
+                                          children: [
+                                            CircleAvatar(
+                                              minRadius: 40.0,
+                                              backgroundImage: AssetImage(
+                                                categoryList.elementAt(
+                                                    index)['imgpath']!,
+                                              ),
+                                            ),
+                                            height10,
+                                            CustomText(
+                                              text: makerList.elementAt(index),
+                                            ),
+                                            height10,
+                                          ],
                                         ),
                                       ),
-                                      height10,
-                                      CustomText(
-                                        text: makerList.elementAt(index),
-                                      ),
-                                      height10,
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
                         ),
 
                         /// Below List widget should be rendered [when something is searched]

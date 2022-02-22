@@ -20,6 +20,7 @@ const String seekerCheckoutRoute = '/SeekerCheckout';
 const String foodMakerRegisterRoute = '/MakerRegister';
 const String foodMakerLoginRoute = '/MakerLogin';
 const String makerDetailRoute = '/MakerDetails';
+const String makerBankDetailsRoute = '/MakerBankDetails';
 const String restaurantContactRoute = '/RestaurantContact';
 const String restaurantOwnerRoute = '/OwnerDetails';
 const String makerHomeRoute = '/MakerHome';

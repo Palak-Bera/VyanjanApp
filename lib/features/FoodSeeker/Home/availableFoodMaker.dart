@@ -167,7 +167,19 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
           child: TextFormField(
             controller: _searchController,
             textCapitalization: TextCapitalization.words,
-            onChanged: (value) {},
+            onChanged: (value) {
+              if (value.isEmpty) {
+                isExecuted = false;
+                setState(() {});
+                return;
+              }
+              SearchBar().queryData(_searchController.value.text).then((value) {
+                querySnapshot = value;
+                setState(() {
+                  isExecuted = true;
+                });
+              });
+            },
             onFieldSubmitted: (value) {
               SearchBar().queryData(_searchController.value.text).then((value) {
                 querySnapshot = value;
@@ -209,7 +221,7 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
           : SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Text('dskj'),
+                child: Center(child: Text('Search for Food Makers')),
               ),
             ),
     );
