@@ -269,7 +269,7 @@ class _MakerDetailsState extends State<MakerDetails> {
                         if (_formKey.currentState!.validate()) {
                           var makerCity = makerFinalAddress.split(',');
 
-                          makerRef.doc(auth.currentUser!.phoneNumber).set({
+                          Map<String, dynamic> _makerDetailsMap = {
                             'name': _nameController.value.text,
                             'phoneNo': auth.currentUser!.phoneNumber,
                             'alternatePhoneNo': _alternatePhoneNo,
@@ -286,14 +286,39 @@ class _MakerDetailsState extends State<MakerDetails> {
                                 : makerFinalAddress,
                             'city': makerCity[makerCity.length - 3],
                             'status': true
-                          }).then((value) async {
-                            // await createMakerContact(
-                            //     _nameController.value.text);
-                            //preferences.setString('UserState', 'Maker');
-                            //preferences.setBool('status', true);
+                          };
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MakerBankDetails(
+                                makerDetailsMap: _makerDetailsMap,
+                              ),
+                            ),
+                          );
+                          // makerRef.doc(auth.currentUser!.phoneNumber).set({
+                          //   'name': _nameController.value.text,
+                          //   'phoneNo': auth.currentUser!.phoneNumber,
+                          //   'alternatePhoneNo': _alternatePhoneNo,
+                          //   'address': makerFinalAddress == ''
+                          //       ? _buildingController.value.text +
+                          //           ' ' +
+                          //           _landmarkController.value.text +
+                          //           ' ' +
+                          //           _cityController.value.text +
+                          //           ' ' +
+                          //           _stateController.value.text +
+                          //           ' ' +
+                          //           _pincodeController.value.text
+                          //       : makerFinalAddress,
+                          //   'city': makerCity[makerCity.length - 3],
+                          //   'status': true
+                          // }).then((value) async {
+                          //   // await createMakerContact(
+                          //   //     _nameController.value.text);
+                          //   //preferences.setString('UserState', 'Maker');
+                          //   //preferences.setBool('status', true);
 
-                            Navigator.pushNamed(context, makerBankDetailsRoute);
-                          });
+                          //});
                         }
                       }),
                 ),
@@ -304,25 +329,6 @@ class _MakerDetailsState extends State<MakerDetails> {
         ),
       ),
     );
-  }
-
-  createMakerContact(String makerName) async {
-    var data = {
-      "name": makerName,
-      'contact': auth.currentUser!.phoneNumber,
-      "email": ''
-    };
-
-    var url = Uri.parse('https://vyanjan.000webhostapp.com/createContact.php');
-    var res = await http.post(url, body: data);
-    if (res.statusCode == 200) {
-      var response = jsonDecode(res.body);
-      print(response['id']);
-      makerRef.doc(auth.currentUser!.phoneNumber).update({
-        'accountDetails': {'contact_id': response['id']}
-      });
-    }
-    // print('result: ' + res.body.toString());
   }
 
   getLocation() async {

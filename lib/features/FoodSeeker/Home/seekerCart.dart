@@ -17,219 +17,230 @@ class SeekerCart extends StatefulWidget {
 class _SeekerCartState extends State<SeekerCart> {
   String choosePref = "";
 
+  Future<bool> _onWillPop() async {
+    Navigator.pushNamedAndRemoveUntil(
+        context, seekerHomeRoute, (route) => false);
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: white,
-      appBar: AppBar(
-        backwardsCompatibility: true,
-        iconTheme: IconThemeData(color: primaryGreen),
-        elevation: 0.0,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
         backgroundColor: white,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Uppar content
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  // Eat It more Content
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text: preferences.getString('cartMakerItems'),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            CustomText(
-                              text: "Pizza, Fast Food",
-                              fontSize: 15,
-                            ),
-                            CustomText(
-                              text: "Address of the restaurant will go here",
-                              fontSize: 12,
-                              color: grey,
-                            ),
-                          ],
-                        ),
-
-                        // Offers
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.local_offer,
-                              color: primaryGreen,
-                            ),
-                            SizedBox(width: 2),
-                            CustomText(text: "Offers"),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  height20,
-
-                  // Your Cart
-                  Row(
-                    children: [
-                      CustomText(
-                        text: "Your Cart",
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      Icon(
-                        Icons.shopping_bag_outlined,
-                        color: primaryGreen,
-                        size: 30,
-                      )
-                    ],
-                  ),
-                  Divider(
-                    color: grey,
-                  ),
-                  ListView.builder(
-                    itemBuilder: _buildCartItems,
-                    itemCount: cart.cartItem.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                  ),
-                  height20,
-
-                  /// [Choose Preference]
-                  Row(
-                    children: [
-                      CustomText(
-                        text: "Choose your preference",
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      // Icon(Icons.de)
-                    ],
-                  ),
-                  Divider(
-                    color: grey,
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Radio(
-                                value: "Takeaway",
-                                groupValue: choosePref,
-                                onChanged: (value) {
-                                  choosePref = value.toString();
-                                  setState(() {});
-                                },
-                                activeColor: primaryGreen,
-                              ),
-                              CustomText(text: "Takeaway"),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Radio(
-                                value: "Doorstep Delivery",
-                                groupValue: choosePref,
-                                onChanged: (value) {
-                                  choosePref = value.toString();
-                                  setState(() {});
-                                },
-                                activeColor: primaryGreen,
-                              ),
-                              CustomText(text: "Doorstep Delivery"),
-                            ],
-                          ),
-                        ],
-                      ),
-                      CustomText(
-                        text: "₹ 50",
-                        fontSize: 16,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            /// [Grand Total]
-            Container(
-              color: Colors.green[50],
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+        appBar: AppBar(
+          backwardsCompatibility: true,
+          iconTheme: IconThemeData(color: primaryGreen),
+          elevation: 0.0,
+          backgroundColor: white,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Uppar content
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomText(text: "Item Total "),
-                        CustomText(text: getItemCount().toString())
-                      ],
+                    // Eat It more Content
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text: preferences.getString('cartMakerItems'),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              CustomText(
+                                text: "Pizza, Fast Food",
+                                fontSize: 15,
+                              ),
+                              CustomText(
+                                text: "Address of the restaurant will go here",
+                                fontSize: 12,
+                                color: grey,
+                              ),
+                            ],
+                          ),
+
+                          // Offers
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.local_offer,
+                                color: primaryGreen,
+                              ),
+                              SizedBox(width: 2),
+                              CustomText(text: "Offers"),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
+                    height20,
+
+                    // Your Cart
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(text: "Delivery Charges"),
-                        CustomText(text: "₹ 50")
+                        CustomText(
+                          text: "Your Cart",
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        Icon(
+                          Icons.shopping_bag_outlined,
+                          color: primaryGreen,
+                          size: 30,
+                        )
                       ],
                     ),
                     Divider(
                       color: grey,
                     ),
+                    ListView.builder(
+                      itemBuilder: _buildCartItems,
+                      itemCount: cart.cartItem.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                    ),
+                    height20,
+
+                    /// [Choose Preference]
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomText(
-                          text: "Grand Total",
+                          text: "Choose your preference",
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                         ),
+                        // Icon(Icons.de)
+                      ],
+                    ),
+                    Divider(
+                      color: grey,
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Radio(
+                                  value: "Takeaway",
+                                  groupValue: choosePref,
+                                  onChanged: (value) {
+                                    choosePref = value.toString();
+                                    setState(() {});
+                                  },
+                                  activeColor: primaryGreen,
+                                ),
+                                CustomText(text: "Takeaway"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Radio(
+                                  value: "Doorstep Delivery",
+                                  groupValue: choosePref,
+                                  onChanged: (value) {
+                                    choosePref = value.toString();
+                                    setState(() {});
+                                  },
+                                  activeColor: primaryGreen,
+                                ),
+                                CustomText(text: "Doorstep Delivery"),
+                              ],
+                            ),
+                          ],
+                        ),
                         CustomText(
-                          text: '₹ ' + (cart.getTotalAmount() + 50).toString(),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                          text: "₹ 50",
+                          fontSize: 16,
                         )
                       ],
                     ),
                   ],
                 ),
               ),
-            ),
 
-            SizedBox(
-              height: screenHeight / 13,
-            ),
-          ],
+              /// [Grand Total]
+              Container(
+                color: Colors.green[50],
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(text: "Item Total "),
+                          CustomText(text: getItemCount().toString())
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(text: "Delivery Charges"),
+                          CustomText(text: "₹ 50")
+                        ],
+                      ),
+                      Divider(
+                        color: grey,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomText(
+                            text: "Grand Total",
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          CustomText(
+                            text:
+                                '₹ ' + (cart.getTotalAmount() + 50).toString(),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: screenHeight / 13,
+              ),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: CustomButton(
-            text: auth.currentUser != null ? "Continue" : "Sign In to Continue",
-            onpressed: () {
-              if (auth.currentUser != null) {
-                Navigator.pushNamed(context, seekerCheckoutRoute);
-              } else {
-                Navigator.pushNamed(context, foodSeekerRegisterRoute);
-              }
-            },
+        bottomNavigationBar: BottomAppBar(
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: CustomButton(
+              text:
+                  auth.currentUser != null ? "Continue" : "Sign In to Continue",
+              onpressed: () {
+                if (auth.currentUser != null) {
+                  Navigator.pushNamed(context, seekerCheckoutRoute);
+                } else {
+                  Navigator.pushNamed(context, foodSeekerRegisterRoute);
+                }
+              },
+            ),
           ),
         ),
       ),
@@ -285,7 +296,7 @@ class _SeekerCartState extends State<SeekerCart> {
                     child: CustomNumberPicker(
                       initialValue: cart.cartItem[index].quantity,
                       maxValue: 10,
-                      minValue: 1,
+                      minValue: 0,
                       step: 1,
                       shape: Border.all(color: white),
                       customAddButton: Icon(
@@ -303,6 +314,10 @@ class _SeekerCartState extends State<SeekerCart> {
                             unitPrice: cart.cartItem[index].unitPrice,
                             productName: cart.cartItem[index].productName,
                             quantity: int.parse(value.toString()));
+                        if (cart.getTotalAmount() == 0) {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, seekerHomeRoute, (route) => false);
+                        }
                       },
                     ),
                   ),

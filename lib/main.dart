@@ -47,7 +47,6 @@ class App extends StatelessWidget {
         seekerDashboardRoute: (context) => SeekerDashboard(),
         seekerCartRoute: (context) => SeekerCart(),
         foodMakerLoginRoute: (context) => MakerLogin(),
-        makerBankDetailsRoute: (context) => MakerBankDetails(),
         foodMakerRegisterRoute: (context) => MakerRegister(),
         makerDetailRoute: (context) => MakerDetails(),
         makerHomeRoute: (context) => MakerHome(),

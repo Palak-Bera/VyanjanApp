@@ -21,12 +21,14 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   CountDownController _countDownController = CountDownController();
   List<Widget> _stepWidgets = [Text('a'), Text('b'), Text('c')];
 
-  late String makerEmail = 'xyz@gmail.com', makerContact;
+  late String makerContact;
 
   int currentStep = 0;
 
   late Razorpay razorpay;
   late var result;
+
+  late var makerAccDetails;
 
   @override
   void initState() {
@@ -46,6 +48,36 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     super.dispose();
     razorpay.clear();
     print('cleared');
+  }
+
+  getMakerDetails() async {
+    makerRef
+        .where('name', isEqualTo: preferences.getString('cartMakerItems'))
+        .snapshots()
+        .forEach((element) {
+      element.docs.forEach((element) {
+        makerContact = element.get('phoneNo');
+        makerAccDetails = element.get('accountDetails');
+        print(makerAccDetails);
+      });
+    });
+  }
+
+  Future<void> onPaymentSuccess(PaymentSuccessResponse response) async {
+    await vendorPayout();
+    Fluttertoast.showToast(msg: 'Success').then((value) {
+      cart.cartItem.clear();
+      Navigator.pushNamedAndRemoveUntil(
+          context, seekerHomeRoute, (route) => false);
+    });
+  }
+
+  void onPaymentError() {
+    Fluttertoast.showToast(msg: 'Error');
+  }
+
+  void onExternalWallet() {
+    Fluttertoast.showToast(msg: 'External Wallet');
   }
 
   String generateMd5(String input) {
@@ -85,45 +117,42 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     print(result['id']);
   }
 
-  getMakerDetails() async {
-    makerRef
-        .where('name', isEqualTo: preferences.getString('cartMakerItems'))
-        .snapshots()
-        .forEach((element) {
-      element.docs.forEach((element) {
-        makerContact = element.get('phoneNo');
-      });
-    });
-  }
+  Future<void> vendorPayout() async {
+    double amt = cart.getTotalAmount() * 100;
 
-  Future<void> onPaymentSuccess(PaymentSuccessResponse response) async {
-    Fluttertoast.showToast(msg: 'Success');
+    var apiKey = 'rzp_test_QsDMPb9jLx9EbE';
+    var secret = 'mZk44Ei1HtdmkqE3KxlMC5zz';
+    var authn = 'Basic ' + base64Encode(utf8.encode('$apiKey:$secret'));
 
-    // var data = {
-    //   "name": preferences.getString('cartMakerItems'),
-    //   'contact': makerContact,
-    //   "email": makerEmail
-    // };
+    var headers = {
+      'content-type': 'application/json',
+      'Authorization': authn,
+    };
 
-    // var url = Uri.parse('https://vyanjan.000webhostapp.com/createContact.php');
-    // var res = await http.post(url, body: data);
-    // if (res.statusCode != 200) {
-    //   Fluttertoast.showToast(
-    //       msg: 'Some Error occurred while initiating payment');
-    //   throw Exception('http.post error: statusCode= ${res.statusCode}');
-    // }
-    // print('result: ' + res.body.toString());
-  }
+    var data = {
+      "account_number": "2323230076571783",
+      "fund_account_id": makerAccDetails['fundAcc_id'],
+      "amount": amt.toInt(),
+      "currency": "INR",
+      "mode": "IMPS",
+      "purpose": "payout",
+      "queue_if_low_balance": true
+    };
 
-  void onPaymentError() {
-    Fluttertoast.showToast(msg: 'Error');
-  }
+    var url = Uri.parse('https://api.razorpay.com/v1/payouts');
+    var res = await http.post(url, headers: headers, body: jsonEncode(data));
+    if (res.statusCode != 200) {
+      Fluttertoast.showToast(
+          msg: 'Some Error occured while initiating payment');
 
-  void onExternalWallet() {
-    Fluttertoast.showToast(msg: 'External Wallet');
+      print(res.body);
+      throw Exception('http.post error: statusCode= ${res.statusCode}');
+    } else
+      print('success');
   }
 
   void openCheckout(String order_id) {
+    print((cart.getTotalAmount() * 100).runtimeType);
     var options = {
       "key": "rzp_test_QsDMPb9jLx9EbE",
       'order_id': order_id,
@@ -246,7 +275,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
 
   CupertinoStepper _buildStepper(StepperType type, List<Widget> _stepWidgets) {
     final canCancel = currentStep < 2;
-    final canContinue = currentStep < 3;
+    final canContinue = currentStep < 2;
 
     return CupertinoStepper(
       type: type,
@@ -277,14 +306,6 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
             body: _stepWidgets[i],
             isActive: i == currentStep,
           ),
-        // _buildStep(
-        //   title: Text('Error'),
-        //   state: StepState.error,
-        // ),
-        // _buildStep(
-        //   title: Text('Disabled'),
-        //   state: StepState.disabled,
-        // )
       ],
     );
   }

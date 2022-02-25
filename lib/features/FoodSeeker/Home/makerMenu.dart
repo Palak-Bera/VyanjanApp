@@ -198,7 +198,7 @@ class _MakerMenuState extends State<MakerMenu> {
               )
             ],
           ),
-          cart.cartItem.length > 0
+          cart.getTotalAmount() > 0
               ? Positioned(
                   left: 0,
                   right: 0,
@@ -207,7 +207,10 @@ class _MakerMenuState extends State<MakerMenu> {
                     color: primaryGreen,
                     child: ListTile(
                       onTap: () {
-                        Navigator.pushNamed(context, seekerCartRoute);
+                        Navigator.pushNamed(context, seekerCartRoute)
+                            .then((value) {
+                          setState(() {});
+                        });
                       },
                       title: Text(
                         getItemCount().toString() + ' items',
@@ -418,7 +421,7 @@ class _MakerMenuState extends State<MakerMenu> {
                                         ['quantity']
                                     .toString()),
                                 maxValue: 10,
-                                minValue: 1,
+                                minValue: 0,
                                 step: 1,
                                 shape: Border.all(color: white),
                                 customAddButton: Icon(

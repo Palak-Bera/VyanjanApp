@@ -405,7 +405,7 @@ class _SeekerHomeState extends State<SeekerHome> {
                     ),
                   ),
                 ),
-                cart.cartItem.length > 0
+                cart.getTotalAmount() > 0
                     ? Positioned(
                         left: 0,
                         right: 0,
