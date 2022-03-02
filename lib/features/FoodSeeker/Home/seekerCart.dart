@@ -18,8 +18,9 @@ class _SeekerCartState extends State<SeekerCart> {
   String choosePref = "";
 
   Future<bool> _onWillPop() async {
-    Navigator.pushNamedAndRemoveUntil(
-        context, seekerHomeRoute, (route) => false);
+    Navigator.popUntil(context, ModalRoute.withName(seekerHomeRoute));
+    // Navigator.pushNamedAndRemoveUntil(
+    //     context, seekerHomeRoute, (route) => false);
     return true;
   }
 

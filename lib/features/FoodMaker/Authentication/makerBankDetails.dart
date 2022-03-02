@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
@@ -132,9 +133,10 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
                           await createMakerContact(
                               widget.makerDetailsMap['name']);
 
+                          getDeviceToken();
+
                           preferences.setString('UserState', 'Maker');
                           preferences.setBool('status', true);
-
                           Navigator.pushNamedAndRemoveUntil(
                               context, makerHomeRoute, (route) => false);
                         });
@@ -146,6 +148,15 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
         ),
       ),
     );
+  }
+
+  getDeviceToken() async {
+    await FirebaseMessaging.instance.getToken().then((value) {
+      print(value);
+      makerRef
+          .doc(auth.currentUser!.phoneNumber)
+          .update({'deviceToken': value});
+    });
   }
 
   createMakerContact(String makerName) async {

@@ -27,8 +27,9 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
 
   late Razorpay razorpay;
   late var result;
-
   late var makerAccDetails;
+
+  late String token;
 
   @override
   void initState() {
@@ -58,7 +59,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       element.docs.forEach((element) {
         makerContact = element.get('phoneNo');
         makerAccDetails = element.get('accountDetails');
-        print(makerAccDetails);
+        token = element.get('deviceToken');
       });
     });
   }
@@ -66,6 +67,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   Future<void> onPaymentSuccess(PaymentSuccessResponse response) async {
     await vendorPayout();
     Fluttertoast.showToast(msg: 'Success').then((value) {
+      notifyMaker();
       cart.cartItem.clear();
       Navigator.pushNamedAndRemoveUntil(
           context, seekerHomeRoute, (route) => false);
@@ -182,6 +184,38 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         _addressController.text = element.get('address');
       });
     });
+  }
+
+  notifyMaker() async {
+    print("Inside Notify Maker");
+    try {
+      var header = {
+        'Content-Type': 'application/json',
+        'Authorization':
+            'key=AAAAvT050EY:APA91bETR20ptdC3RUQARePGzzAK7C2vA-E6zioVllqfrQXG-LaAAPF0r-tGB7DpyBnXQfbqyaUgP5ZnTMntC7AVRbKAZbEXyLneCgkQT6K6eVCDCjj7NUQTpngwUldx3V5zxRCD4Vag'
+      };
+
+      var body = {
+        'notification': {'body': 'Test Body', 'title': 'order received'},
+        'priority': 'high',
+        'data': {
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'id': '1',
+          'status': 'done'
+        },
+        'to': token,
+      };
+
+      await http
+          .post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+              headers: header, body: jsonEncode(body))
+          .then((value) {
+        print(value.body);
+        print(value.statusCode);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
