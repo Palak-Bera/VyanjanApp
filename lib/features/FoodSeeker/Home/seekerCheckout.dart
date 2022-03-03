@@ -67,7 +67,6 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   Future<void> onPaymentSuccess(PaymentSuccessResponse response) async {
     await vendorPayout();
     Fluttertoast.showToast(msg: 'Success').then((value) {
-      notifyMaker();
       cart.cartItem.clear();
       Navigator.pushNamedAndRemoveUntil(
           context, seekerHomeRoute, (route) => false);
@@ -192,11 +191,17 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       var header = {
         'Content-Type': 'application/json',
         'Authorization':
-            'key=AAAAvT050EY:APA91bETR20ptdC3RUQARePGzzAK7C2vA-E6zioVllqfrQXG-LaAAPF0r-tGB7DpyBnXQfbqyaUgP5ZnTMntC7AVRbKAZbEXyLneCgkQT6K6eVCDCjj7NUQTpngwUldx3V5zxRCD4Vag'
+            'key=AAAAvT050EY:APA91bHVgeUHk_y68wsDJdEgnmtEgoSnlfoPKvm1jCXyxrBG0EHvgQzRlv-Yud7DzT2RfcOBeymYGidE_bPGzMmQe0uAQ-5OaP9ojp_iE6oDk-XlIBAbeJOCjZs7pkLIVKb8orv7YQUh'
       };
-
+      Map<dynamic, dynamic> notificationBody = {
+        'seekerPhoneNo': auth.currentUser!.phoneNumber,
+        'seekerCart': cart.cartItem
+      };
       var body = {
-        'notification': {'body': 'Test Body', 'title': 'order received'},
+        'notification': {
+          'body': jsonEncode(notificationBody),
+          'title': 'order received'
+        },
         'priority': 'high',
         'data': {
           'click_action': 'FLUTTER_NOTIFICATION_CLICK',
@@ -270,6 +275,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       isTimerTextShown: true,
       autoStart: false,
       onStart: () {
+        notifyMaker();
         print('Countdown Started');
       },
       onComplete: () {
@@ -324,6 +330,9 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
               : null,
       onStepContinue: currentStep == 0
           ? () {
+              seekerRef
+                  .doc(auth.currentUser!.phoneNumber)
+                  .update({'address': _addressController.value.text});
               _countDownController.start();
               setState(() => ++currentStep);
             }

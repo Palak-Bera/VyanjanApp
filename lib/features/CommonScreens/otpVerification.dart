@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_app/resources/colors.dart';
@@ -129,7 +130,8 @@ class _OTPVerificationState extends State<OTPVerification> {
                                               print('status: ' +
                                                   status.toString()),
                                               preferences.setBool(
-                                                  'status', status)
+                                                  'status', status),
+                                              getDeviceToken()
                                             })
                                         .whenComplete(() => {
                                               Navigator.pushNamedAndRemoveUntil(
@@ -207,6 +209,15 @@ class _OTPVerificationState extends State<OTPVerification> {
         ),
       ),
     );
+  }
+
+  getDeviceToken() async {
+    await FirebaseMessaging.instance.getToken().then((value) {
+      print(value);
+      makerRef
+          .doc(auth.currentUser!.phoneNumber)
+          .update({'deviceToken': value});
+    });
   }
 
   _verifyPhone() async {

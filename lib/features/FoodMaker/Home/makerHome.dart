@@ -24,11 +24,13 @@ class _MakerHomeState extends State<MakerHome> {
   }
 
   void listenFCM() async {
-    print('listen');
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('notification received');
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
+        var temp = notification.body;
+        print(temp);
         flutterLocalNotificationsPlugin.show(
           notification.hashCode,
           notification.title,
@@ -38,6 +40,11 @@ class _MakerHomeState extends State<MakerHome> {
               channel.id,
               channel.name,
               icon: 'launch_background',
+              importance: Importance.high,
+              fullScreenIntent: true,
+              enableVibration: true,
+              playSound: true,
+              priority: Priority.high,
             ),
           ),
         );
@@ -53,17 +60,11 @@ class _MakerHomeState extends State<MakerHome> {
 
       flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-      /// Create an Android Notification Channel.
-      ///
-      /// We use this channel in the `AndroidManifest.xml` file to override the
-      /// default FCM channel to enable heads up notifications.
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
 
-      /// Update the iOS foreground notification presentation options to allow
-      /// heads up notifications.
       await FirebaseMessaging.instance
           .setForegroundNotificationPresentationOptions(
         alert: true,
