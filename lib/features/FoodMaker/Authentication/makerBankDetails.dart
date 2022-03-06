@@ -219,6 +219,14 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
     } else {
       print(res.statusCode);
       print(res.body);
+      var response = jsonDecode(res.body);
+      print(response['id']);
+      makerRef.doc(auth.currentUser!.phoneNumber).update({
+        'accountDetails': {
+          'contact_id': contact_id,
+          'fundAcc_id': response['id']
+        }
+      });
     }
   }
 }

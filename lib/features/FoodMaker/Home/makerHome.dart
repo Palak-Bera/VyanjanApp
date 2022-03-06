@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
+import 'package:food_app/features/FoodMaker/Home/notificationBanner.dart';
 import 'package:food_app/features/FoodMaker/Home/orderHistory.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
@@ -20,7 +23,20 @@ class _MakerHomeState extends State<MakerHome> {
   void initState() {
     loadFCM();
     listenFCM();
+    setupInteractedMessage();
     super.initState();
+  }
+
+  Future<void> setupInteractedMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    _handleMessage(initialMessage!);
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    Navigator.pushNamed(context, notificationBannerRoute);
   }
 
   void listenFCM() async {
@@ -29,12 +45,11 @@ class _MakerHomeState extends State<MakerHome> {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
-        var temp = notification.body;
-        print(temp);
-        flutterLocalNotificationsPlugin.show(
+        flutterLocalNotificationsPlugin
+            .show(
           notification.hashCode,
           notification.title,
-          notification.body,
+          'Click to accept or reject the order',
           NotificationDetails(
             android: AndroidNotificationDetails(
               channel.id,
@@ -47,7 +62,20 @@ class _MakerHomeState extends State<MakerHome> {
               priority: Priority.high,
             ),
           ),
-        );
+        )
+            .then((value) {
+          String temp1 = notification.body.toString();
+          print(temp1);
+          Map temp = jsonDecode(temp1);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NotificationBanner(
+                orderDetails: temp,
+              ),
+            ),
+          );
+        });
       }
     });
   }
@@ -82,7 +110,7 @@ class _MakerHomeState extends State<MakerHome> {
         appBar: AppBar(
           foregroundColor: primaryGreen,
           backgroundColor: white,
-          title: Center(child: Text('Maker Home')),
+          title: Text('Maker Home'),
           actions: [
             IconButton(
                 onPressed: () {

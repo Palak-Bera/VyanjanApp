@@ -7,6 +7,7 @@ import 'package:food_app/features/FoodMaker/Authentication/makerRegister.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
 import 'package:food_app/features/FoodMaker/Home/makerHome.dart';
 import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
+import 'package:food_app/features/FoodMaker/Home/notificationBanner.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerDetails.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerLogin.dart';
 import 'package:food_app/features/FoodSeeker/Authentication/seekerRegister.dart';
@@ -19,28 +20,39 @@ import 'package:food_app/features/FoodSeeker/Home/seekerDashboard.dart';
 import 'package:food_app/features/InitialScreens/roleSelector.dart';
 import 'package:food_app/features/InitialScreens/splashscreen.dart';
 import 'package:food_app/routes/constants.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'routes/constants.dart';
+
+GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessageOpenedApp.listen((event) {
+    print(event.data);
+  });
   runApp(App());
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message ${message.messageId}');
+  print(message.notification?.title);
+  print(message.notification?.body);
 }
 
 /// Routing between pages is not yet applied as it needs to be managed
 /// by proper State Management Logic according to functionality.
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
 
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navKey,
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
       routes: {

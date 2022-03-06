@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:crypto/crypto.dart';
 import 'package:cupertino_stepper/cupertino_stepper.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:food_app/features/FoodMaker/Home/notificationBanner.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
@@ -34,6 +36,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   @override
   void initState() {
     super.initState();
+
     getAddress();
     getMakerDetails();
 
@@ -52,7 +55,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   }
 
   getMakerDetails() async {
-    makerRef
+    await makerRef
         .where('name', isEqualTo: preferences.getString('cartMakerItems'))
         .snapshots()
         .forEach((element) {
@@ -61,20 +64,34 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         makerAccDetails = element.get('accountDetails');
         token = element.get('deviceToken');
       });
+      checkOrderStatus();
     });
   }
 
   Future<void> onPaymentSuccess(PaymentSuccessResponse response) async {
     await vendorPayout();
+
+    makerRealtimeRef.child(makerContact).limitToLast(1).once().then((value) {
+      String orderID = value.snapshot.children.last.key.toString();
+      print(value.snapshot.children.last.key.toString());
+      makerRealtimeRef
+          .child(makerContact)
+          .child(orderID)
+          .update({'paymentStatus': true});
+    });
     Fluttertoast.showToast(msg: 'Success').then((value) {
       cart.cartItem.clear();
+      // Navigator.popUntil(context, ModalRoute.withName(seekerHomeRoute));
       Navigator.pushNamedAndRemoveUntil(
           context, seekerHomeRoute, (route) => false);
     });
   }
 
   void onPaymentError() {
-    Fluttertoast.showToast(msg: 'Error');
+    Fluttertoast.showToast(msg: 'Error').then((value) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, seekerHomeRoute, (route) => false);
+    });
   }
 
   void onExternalWallet() {
@@ -85,7 +102,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     return md5.convert(utf8.encode(input)).toString();
   }
 
-  createOrder() async {
+  razorpayCreateOrder() async {
     String receipt_id = generateMd5(auth.currentUser!.uid +
         auth.currentUser!.phoneNumber.toString() +
         DateTime.now().toString());
@@ -200,7 +217,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       var body = {
         'notification': {
           'body': jsonEncode(notificationBody),
-          'title': 'order received'
+          'title': 'order received',
         },
         'priority': 'high',
         'data': {
@@ -221,6 +238,56 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     } catch (e) {
       print(e);
     }
+  }
+
+  generateOrder() async {
+    String dt = DateTime.now().millisecondsSinceEpoch.toString();
+    await seekerRealtimeRef
+        .child(auth.currentUser!.phoneNumber.toString())
+        .child(makerContact)
+        .update({
+      'makerName': preferences.getString('cartMakerItems'),
+      'orderStatus': 'NA',
+    }).then((value) async {
+      var temp = seekerRealtimeRef.child(
+          auth.currentUser!.phoneNumber.toString() +
+              "/" +
+              makerContact +
+              "/orders/" +
+              dt);
+
+      cart.cartItem.forEach((element) {
+        temp.child(element.productName.toString()).update({
+          'dishName': element.productName.toString(),
+          'quantity': element.quantity.toString(),
+          'price': element.subTotal.toString(),
+        });
+      });
+    });
+  }
+
+  checkOrderStatus() {
+    seekerRealtimeRef
+        .child(auth.currentUser!.phoneNumber.toString())
+        .onChildChanged
+        .listen((event) {
+      event.snapshot.children.forEach((element) {
+        if (element.key == 'orderStatus') {
+          print(element.value);
+          if (element.value == true) {
+            setState(() {
+              currentStep++;
+            });
+          } else if (element.value == false) {
+            Fluttertoast.showToast(
+                    msg: 'Your Order was Rejected by the Food Maker')
+                .then((value) {
+              Navigator.of(context).pop();
+            });
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -276,6 +343,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       autoStart: false,
       onStart: () {
         notifyMaker();
+        generateOrder();
         print('Countdown Started');
       },
       onComplete: () {
@@ -286,7 +354,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     _stepWidgets[2] = Container(
       child: ElevatedButton(
         onPressed: () {
-          createOrder();
+          razorpayCreateOrder();
         },
         child: Text('Pay ₹ ' + cart.getTotalAmount().toString()),
       ),
@@ -369,5 +437,9 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         child: body,
       ),
     );
+  }
+
+  navigate() {
+    Navigator.pushNamed(context, notificationBannerRoute);
   }
 }

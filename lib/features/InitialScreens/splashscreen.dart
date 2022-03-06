@@ -7,6 +7,8 @@ import 'package:food_app/features/InitialScreens/roleSelector.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 
+import '../../main.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 

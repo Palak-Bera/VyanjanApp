@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +25,7 @@ const String makerDetailRoute = '/MakerDetails';
 const String restaurantContactRoute = '/RestaurantContact';
 const String restaurantOwnerRoute = '/OwnerDetails';
 const String makerHomeRoute = '/MakerHome';
+const String notificationBannerRoute = '/NotificationBanner';
 
 /// Routes for [Common Screen]
 const String otpRoute = '/OTPVerification';
@@ -33,7 +36,13 @@ CollectionReference makerRef =
     FirebaseFirestore.instance.collection('foodMaker');
 CollectionReference seekerRef =
     FirebaseFirestore.instance.collection('foodSeeker');
+
 FirebaseAuth auth = FirebaseAuth.instance;
+
+DatabaseReference makerRealtimeRef =
+    FirebaseDatabase.instance.ref("makerOrders");
+DatabaseReference seekerRealtimeRef =
+    FirebaseDatabase.instance.ref("seekerOrders");
 
 String role = '';
 
