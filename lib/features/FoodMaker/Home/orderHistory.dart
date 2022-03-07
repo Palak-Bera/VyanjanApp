@@ -1,5 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/resources/colors.dart';
+import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 
@@ -12,9 +14,10 @@ class OrderHistory extends StatefulWidget {
 }
 
 class _UserCartState extends State<OrderHistory> {
-  
   @override
   Widget build(BuildContext context) {
+    var dbRef =
+        makerRealtimeRef.child(auth.currentUser!.phoneNumber.toString());
     var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: white,
@@ -56,18 +59,6 @@ class _UserCartState extends State<OrderHistory> {
                             ),
                           ],
                         ),
-
-                        // Offers
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.local_offer,
-                              color: primaryGreen,
-                            ),
-                            SizedBox(width: 2),
-                            CustomText(text: "Offers"),
-                          ],
-                        )
                       ],
                     ),
                   ),
