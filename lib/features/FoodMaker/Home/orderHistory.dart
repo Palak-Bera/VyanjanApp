@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_database/ui/firebase_list.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
@@ -16,16 +20,10 @@ class OrderHistory extends StatefulWidget {
 class _UserCartState extends State<OrderHistory> {
   @override
   Widget build(BuildContext context) {
-    var dbRef =
-        makerRealtimeRef.child(auth.currentUser!.phoneNumber.toString());
     var screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: white,
-      appBar: CustomAppbar(
-        onBackPressed: () {
-          Navigator.pop(context);
-        },
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -63,6 +61,7 @@ class _UserCartState extends State<OrderHistory> {
                     ),
                   ),
                   height20,
+
                   /// [Your Orders title]
                   Row(
                     children: [
@@ -81,40 +80,69 @@ class _UserCartState extends State<OrderHistory> {
                   Divider(
                     color: grey,
                   ),
+
                   /// [orders]
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: "Veg.Cheese Sandwich",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Rs. 110",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Medium",
-                        fontSize: 15,
-                        color: grey,
-                      ),
-                      Divider(color: grey,),
-                      CustomText(
-                        text: "Veg.Cheese Sandwich",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Rs. 110",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Medium",
-                        fontSize: 15,
-                        color: grey,
-                      ),
-                    ],
+                  StreamBuilder(
+                    builder: (BuildContext context,
+                        AsyncSnapshot<DatabaseEvent> snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text("Loading");
+                      } else {
+                        return ListView(
+                          shrinkWrap: true,
+                          children:
+                              snapshot.data!.snapshot.children.map((document) {
+                            var temp = jsonEncode(document.value);
+                            var order = jsonDecode(temp);
+
+                            Map<String, dynamic> items = order['seekerItems'];
+
+                            items.forEach((key, value) {
+                              print(value);
+                            });
+
+                            // return ListTile(
+                            //   title: CustomText(
+                            //     text: order['seekerName'],
+                            //   ),
+                            //   subtitle: CustomText(
+                            //     text: order['seekerPhoneNo'],
+                            //     color: grey,
+                            //   ),
+                            // );
+
+                            return ExpansionTile(
+                              title: CustomText(
+                                text: order['seekerName'],
+                              ),
+                              subtitle: CustomText(
+                                text: order['seekerPhoneNo'],
+                                color: grey,
+                              ),
+                              children: items.values.map((value) {
+                                return ListTile(
+                                  title: Text(
+                                    value['dishName'],
+                                    style: TextStyle(fontSize: 13.0),
+                                  ),
+                                  subtitle: Text(
+                                    'Quantity: ' + value['quantity'].toString(),
+                                    style: TextStyle(fontSize: 10.0),
+                                  ),
+                                );
+                              }).toList(),
+                            );
+                          }).toList(),
+                        );
+                      }
+                    },
+                    stream: makerRealtimeRef
+                        .child(auth.currentUser!.phoneNumber.toString())
+                        .orderByChild('id')
+                        .onValue,
                   ),
                   height30,
+
                   /// [Completed Orders title]
                   Row(
                     children: [
@@ -129,41 +157,8 @@ class _UserCartState extends State<OrderHistory> {
                   Divider(
                     color: grey,
                   ),
-               /// [Completed orders]
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: "Veg.Cheese Sandwich",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Rs. 110",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Medium",
-                        fontSize: 15,
-                        color: grey,
-                      ),
-                      Divider(
-                        color: grey,
-                      ),
-                      CustomText(
-                        text: "Veg.Cheese Sandwich",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Rs. 110",
-                        fontSize: 16,
-                      ),
-                      CustomText(
-                        text: "Medium",
-                        fontSize: 15,
-                        color: grey,
-                      ),
-                    ],
-                  )
+
+                  /// [Completed orders]
                 ],
               ),
             ),

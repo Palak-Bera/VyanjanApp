@@ -126,6 +126,7 @@ class _NotificationBannerState extends State<NotificationBanner> {
                             .child(auth.currentUser!.phoneNumber.toString())
                             .child(dt)
                             .update({
+                          'id': dt,
                           'seekerName': seekerName,
                           'seekerPhoneNo': widget.orderDetails['seekerPhoneNo'],
                           'paymentStatus': false,
