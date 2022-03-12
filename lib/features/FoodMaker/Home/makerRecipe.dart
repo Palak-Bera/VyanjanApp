@@ -17,6 +17,8 @@ class MakerRecipe extends StatefulWidget {
 class _MakerRecipeState extends State<MakerRecipe> {
   bool _available = true;
 
+  String makerName = '';
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _dishNameController = TextEditingController();
   TextEditingController _descController = TextEditingController();
@@ -25,6 +27,11 @@ class _MakerRecipeState extends State<MakerRecipe> {
   @override
   void initState() {
     super.initState();
+    makerRef.doc(auth.currentUser!.phoneNumber).get().then((value) {
+      setState(() {
+        makerName = value.get('name');
+      });
+    });
     setState(() {
       _available = preferences.getBool('status');
     });
@@ -48,7 +55,7 @@ class _MakerRecipeState extends State<MakerRecipe> {
                     Row(
                       children: [
                         CustomText(
-                          text: 'Demo',
+                          text: makerName,
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                         ),

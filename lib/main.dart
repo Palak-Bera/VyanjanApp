@@ -68,7 +68,6 @@ class _AppState extends State<App> {
         foodMakerRegisterRoute: (context) => MakerRegister(),
         makerDetailRoute: (context) => MakerDetails(),
         makerHomeRoute: (context) => MakerHome(),
-        seekerCheckoutRoute: (context) => SeekerCheckout(),
       },
     );
   }

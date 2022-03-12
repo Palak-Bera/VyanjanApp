@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_number_picker/flutter_number_picker.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerCheckout.dart';
 import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
@@ -16,6 +17,7 @@ class SeekerCart extends StatefulWidget {
 
 class _SeekerCartState extends State<SeekerCart> {
   String choosePref = "";
+  bool isDoorstepDelivery = false;
 
   Future<bool> _onWillPop() async {
     Navigator.popUntil(context, ModalRoute.withName(seekerHomeRoute));
@@ -43,44 +45,23 @@ class _SeekerCartState extends State<SeekerCart> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Eat It more Content
                     Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text: preferences.getString('cartMakerItems'),
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              CustomText(
-                                text: "Pizza, Fast Food",
-                                fontSize: 15,
-                              ),
-                              CustomText(
-                                text: "Address of the restaurant will go here",
-                                fontSize: 12,
-                                color: grey,
-                              ),
-                            ],
+                          CustomText(
+                            text: preferences.getString('cartMakerItems'),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
                           ),
-
-                          // Offers
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.local_offer,
-                                color: primaryGreen,
-                              ),
-                              SizedBox(width: 2),
-                              CustomText(text: "Offers"),
-                            ],
-                          )
+                          CustomText(
+                            text: "Address of the restaurant will go here",
+                            fontSize: 12,
+                            color: grey,
+                          ),
                         ],
                       ),
                     ),
@@ -140,6 +121,7 @@ class _SeekerCartState extends State<SeekerCart> {
                                   groupValue: choosePref,
                                   onChanged: (value) {
                                     choosePref = value.toString();
+                                    isDoorstepDelivery = false;
                                     setState(() {});
                                   },
                                   activeColor: primaryGreen,
@@ -154,6 +136,7 @@ class _SeekerCartState extends State<SeekerCart> {
                                   groupValue: choosePref,
                                   onChanged: (value) {
                                     choosePref = value.toString();
+                                    isDoorstepDelivery = true;
                                     setState(() {});
                                   },
                                   activeColor: primaryGreen,
@@ -163,10 +146,6 @@ class _SeekerCartState extends State<SeekerCart> {
                             ),
                           ],
                         ),
-                        CustomText(
-                          text: "₹ 50",
-                          fontSize: 16,
-                        )
                       ],
                     ),
                   ],
@@ -188,13 +167,15 @@ class _SeekerCartState extends State<SeekerCart> {
                           CustomText(text: getItemCount().toString())
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomText(text: "Delivery Charges"),
-                          CustomText(text: "₹ 50")
-                        ],
-                      ),
+                      isDoorstepDelivery
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomText(text: "Delivery Charges"),
+                                CustomText(text: "₹ 50")
+                              ],
+                            )
+                          : Container(),
                       Divider(
                         color: grey,
                       ),
@@ -207,8 +188,10 @@ class _SeekerCartState extends State<SeekerCart> {
                             fontWeight: FontWeight.w500,
                           ),
                           CustomText(
-                            text:
-                                '₹ ' + (cart.getTotalAmount() + 50).toString(),
+                            text: '₹ ' +
+                                (cart.getTotalAmount() +
+                                        (isDoorstepDelivery ? 50 : 0))
+                                    .toString(),
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
                           )
@@ -229,16 +212,34 @@ class _SeekerCartState extends State<SeekerCart> {
           elevation: 2,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: CustomButton(
-              text:
-                  auth.currentUser != null ? "Continue" : "Sign In to Continue",
-              onpressed: () {
-                if (auth.currentUser != null) {
-                  Navigator.pushNamed(context, seekerCheckoutRoute);
-                } else {
-                  Navigator.pushNamed(context, foodSeekerRegisterRoute);
-                }
-              },
+            child: MaterialButton(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              color: choosePref != "" ? primaryGreen : Colors.grey[400],
+              onPressed: choosePref != ""
+                  ? () {
+                      if (auth.currentUser != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SeekerCheckout(
+                              deliveryMode: choosePref,
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.pushNamed(context, foodSeekerRegisterRoute);
+                      }
+                    }
+                  : () {
+                      return null;
+                    },
+              child: CustomText(
+                text: auth.currentUser != null
+                    ? "Continue"
+                    : "Sign In to Continue",
+                fontWeight: FontWeight.bold,
+                color: white,
+              ),
             ),
           ),
         ),

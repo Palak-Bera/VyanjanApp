@@ -45,7 +45,8 @@ class CustomText extends StatelessWidget {
       required this.text,
       this.color,
       this.fontSize,
-      this.fontWeight,this.softwrap})
+      this.fontWeight,
+      this.softwrap})
       : super(key: key);
 
   @override
@@ -54,7 +55,7 @@ class CustomText extends StatelessWidget {
       margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         this.text,
-        softWrap: this.softwrap??false,
+        softWrap: this.softwrap ?? false,
         style: TextStyle(
           color: this.color ?? primaryBlack,
           fontSize: this.fontSize ?? 15.0,
@@ -92,4 +93,3 @@ class CustomButton extends StatelessWidget {
         ));
   }
 }
-

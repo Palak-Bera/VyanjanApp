@@ -13,7 +13,13 @@ import 'package:food_app/widgets/dividers.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../widgets/customWidgets.dart';
+
 class SeekerCheckout extends StatefulWidget {
+  final String deliveryMode;
+  const SeekerCheckout({Key? key, required this.deliveryMode})
+      : super(key: key);
+
   @override
   _SeekerCheckoutState createState() => _SeekerCheckoutState();
 }
@@ -24,6 +30,8 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   List<Widget> _stepWidgets = [Text('a'), Text('b'), Text('c')];
 
   late String makerContact;
+  late String makerAddress;
+  String paymentMode = "";
 
   int currentStep = 0;
 
@@ -39,6 +47,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
 
     getAddress();
     getMakerDetails();
+    print('paymentMode: ' + paymentMode);
 
     razorpay = new Razorpay();
 
@@ -60,9 +69,12 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         .snapshots()
         .forEach((element) {
       element.docs.forEach((element) {
-        makerContact = element.get('phoneNo');
-        makerAccDetails = element.get('accountDetails');
-        token = element.get('deviceToken');
+        setState(() {
+          makerContact = element.get('phoneNo');
+          makerAccDetails = element.get('accountDetails');
+          token = element.get('deviceToken');
+          makerAddress = element.get('address');
+        });
       });
       checkOrderStatus();
     });
@@ -74,10 +86,11 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     makerRealtimeRef.child(makerContact).limitToLast(1).once().then((value) {
       String orderID = value.snapshot.children.last.key.toString();
       print(value.snapshot.children.last.key.toString());
-      makerRealtimeRef
-          .child(makerContact)
-          .child(orderID)
-          .update({'paymentStatus': true});
+      makerRealtimeRef.child(makerContact).child(orderID).update({
+        'paymentStatus': true,
+        'deliveryMode': widget.deliveryMode,
+        'paymentMode': paymentMode,
+      });
     });
     Fluttertoast.showToast(msg: 'Success').then((value) {
       cart.cartItem.clear();
@@ -117,7 +130,9 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     };
 
     var data = {
-      "amount": cart.getTotalAmount() * 100,
+      "amount": widget.deliveryMode == "Doorstep Delivery"
+          ? ((cart.getTotalAmount() * 100) + 50 * 100)
+          : cart.getTotalAmount() * 100,
       "currency": "INR",
       "receipt": receipt_id
     };
@@ -126,7 +141,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     var res = await http.post(url, headers: headers, body: jsonEncode(data));
     if (res.statusCode != 200) {
       Fluttertoast.showToast(
-          msg: 'Some Error occured while initiating payment');
+          msg: 'Some Error occurred while initiating payment');
       throw Exception('http.post error: statusCode= ${res.statusCode}');
     } else {
       result = jsonDecode(res.body);
@@ -136,7 +151,11 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   }
 
   Future<void> vendorPayout() async {
-    double amt = cart.getTotalAmount() * 100;
+    double amt = widget.deliveryMode == "Doorstep Delivery"
+        ? ((cart.getTotalAmount() * 100) + 50 * 100)
+        : cart.getTotalAmount();
+    print('Payout amt: ' + amt.toString());
+    print('Payout amt: ' + (amt * 0.8).toString());
 
     var apiKey = 'rzp_test_QsDMPb9jLx9EbE';
     var secret = 'mZk44Ei1HtdmkqE3KxlMC5zz';
@@ -150,7 +169,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     var data = {
       "account_number": "2323230076571783",
       "fund_account_id": makerAccDetails['fundAcc_id'],
-      "amount": amt.toInt(),
+      "amount": (amt * 0.8).toInt(),
       "currency": "INR",
       "mode": "IMPS",
       "purpose": "payout",
@@ -161,7 +180,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     var res = await http.post(url, headers: headers, body: jsonEncode(data));
     if (res.statusCode != 200) {
       Fluttertoast.showToast(
-          msg: 'Some Error occured while initiating payment');
+          msg: 'Some Error occurred while initiating payment');
 
       print(res.body);
       throw Exception('http.post error: statusCode= ${res.statusCode}');
@@ -296,27 +315,42 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Delivering to',
+          widget.deliveryMode == "Takeaway" ? 'Pick up from' : 'Delivering to',
           style: TextStyle(
             color: primaryGreen,
           ),
         ),
         height10,
-        TextField(
-          controller: _addressController,
-          cursorColor: primaryGreen,
-          maxLines: null,
-          keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primaryGreen),
-            ),
-            focusColor: primaryGreen,
-            border: new OutlineInputBorder(
-              borderSide: new BorderSide(),
-            ),
-          ),
-        ),
+        widget.deliveryMode == "Takeaway"
+            ? TextFormField(
+                initialValue: makerAddress,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreen),
+                  ),
+                  focusColor: primaryGreen,
+                  border: new OutlineInputBorder(
+                    borderSide: new BorderSide(),
+                  ),
+                ),
+              )
+            : TextField(
+                controller: _addressController,
+                cursorColor: primaryGreen,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreen),
+                  ),
+                  focusColor: primaryGreen,
+                  border: new OutlineInputBorder(
+                    borderSide: new BorderSide(),
+                  ),
+                ),
+              ),
         height20,
       ],
     );
@@ -351,13 +385,81 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       },
     );
 
-    _stepWidgets[2] = Container(
-      child: ElevatedButton(
-        onPressed: () {
-          razorpayCreateOrder();
-        },
-        child: Text('Pay ₹ ' + cart.getTotalAmount().toString()),
-      ),
+    _stepWidgets[2] = Column(
+      children: [
+        Row(
+          children: [
+            Radio(
+              value: "Cash on Delivery",
+              groupValue: paymentMode,
+              onChanged: (value) {
+                paymentMode = value.toString();
+                setState(() {});
+              },
+              activeColor: primaryGreen,
+            ),
+            CustomText(text: "Cash on Delivery"),
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: new Container(
+                margin: const EdgeInsets.only(left: 10.0, right: 15.0),
+                child: Divider(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            Text(
+              "OR",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13.0,
+                  color: primaryGreen),
+            ),
+            Expanded(
+              child: new Container(
+                margin: const EdgeInsets.only(left: 15.0, right: 10.0),
+                child: Divider(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Radio(
+              value: "Online Mode",
+              groupValue: paymentMode,
+              onChanged: (value) {
+                paymentMode = value.toString();
+                setState(() {});
+              },
+              activeColor: primaryGreen,
+            ),
+            CustomText(text: "Online Mode"),
+          ],
+        ),
+        // Container(
+        //   child: MaterialButton(
+        //     textColor: white,
+        //     color: paymentMode == "Cash on Delivery"
+        //         ? Colors.grey[400]
+        //         : primaryGreen,
+        //     onPressed: () {
+        //       if (paymentMode == "Cash on Delivery") {
+        //         return null;
+        //       } else {
+        //         paymentMode = "";
+        //         razorpayCreateOrder();
+        //       }
+        //     },
+        //     child: Text('Pay ₹ ' + cart.getTotalAmount().toString()),
+        //   ),
+        // ),
+      ],
     );
 
     return Scaffold(
@@ -383,7 +485,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
 
   CupertinoStepper _buildStepper(StepperType type, List<Widget> _stepWidgets) {
     final canCancel = currentStep < 2;
-    final canContinue = currentStep < 2;
+    final canContinue = paymentMode == "" ? currentStep < 2 : currentStep < 3;
 
     return CupertinoStepper(
       type: type,
@@ -405,7 +507,22 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
               setState(() => ++currentStep);
             }
           : canContinue
-              ? () => setState(() => ++currentStep)
+              ? () {
+                  if (currentStep == 2) {
+                    if (paymentMode == "Online Mode") {
+                      razorpayCreateOrder();
+                    } else {
+                      Fluttertoast.showToast(msg: 'Order Placed Successfully')
+                          .then((value) {
+                        cart.cartItem.clear();
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, seekerHomeRoute, (route) => false);
+                      });
+                    }
+                  } else {
+                    setState(() => ++currentStep);
+                  }
+                }
               : null,
       steps: [
         for (var i = 0; i < _stepWidgets.length; i++)
@@ -428,7 +545,6 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   }) {
     return Step(
       title: title,
-      subtitle: Text('Subtitle'),
       state: StepState.disabled,
       isActive: isActive,
       content: LimitedBox(

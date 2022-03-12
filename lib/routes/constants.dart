@@ -16,7 +16,6 @@ const String availableFoodMakerRoute = '/AvailableFoodMaker';
 const String makerMenuRoute = '/MakerMenu';
 const String seekerCartRoute = '/SeekerCart';
 const String seekerDashboardRoute = '/SeekerDashboard';
-const String seekerCheckoutRoute = '/SeekerCheckout';
 
 /// Routes for [Food Maker]
 const String foodMakerRegisterRoute = '/MakerRegister';

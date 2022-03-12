@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_database/ui/firebase_list.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/features/FoodMaker/Home/makerRecipe.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
@@ -32,35 +33,7 @@ class _UserCartState extends State<OrderHistory> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  // Eat It more Content
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text: "Eat It More",
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            CustomText(
-                              text: "Pizza, Fast Food",
-                              fontSize: 15,
-                            ),
-                            CustomText(
-                              text: "Address of the restaurant will go here",
-                              fontSize: 12,
-                              color: grey,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  height20,
+                  height10,
 
                   /// [Your Orders title]
                   Row(
@@ -112,12 +85,29 @@ class _UserCartState extends State<OrderHistory> {
                             // );
 
                             return ExpansionTile(
-                              title: CustomText(
-                                text: order['seekerName'],
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  order['paymentStatus']
+                                      ? CustomText(
+                                          text: 'Payment Completed',
+                                          color: Colors.green,
+                                          fontSize: 9.0,
+                                        )
+                                      : CustomText(
+                                          text: 'Payment Pending',
+                                          color: Colors.red,
+                                          fontSize: 9.0,
+                                        ),
+                                  CustomText(
+                                    text: order['seekerName'],
+                                  ),
+                                ],
                               ),
                               subtitle: CustomText(
                                 text: order['seekerPhoneNo'],
                                 color: grey,
+                                fontSize: 12.0,
                               ),
                               children: items.values.map((value) {
                                 return ListTile(

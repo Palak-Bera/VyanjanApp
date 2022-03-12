@@ -30,7 +30,7 @@ class _NotificationBannerState extends State<NotificationBanner> {
         .doc(widget.orderDetails['seekerPhoneNo'])
         .get()
         .then((value) {
-      seekerName = value.get('firstName') + value.get('lastName');
+      seekerName = value.get('firstName') + ' ' + value.get('lastName');
     });
   }
 
