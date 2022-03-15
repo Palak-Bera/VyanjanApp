@@ -36,7 +36,14 @@ class _MakerHomeState extends State<MakerHome> {
   }
 
   void _handleMessage(RemoteMessage message) {
-    Navigator.pushNamed(context, notificationBannerRoute);
+    print(message);
+    String temp1 = message.notification!.body.toString();
+    print(temp1);
+    Map temp = jsonDecode(temp1);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => NotificationBanner(orderDetails: temp)));
   }
 
   void listenFCM() async {
@@ -65,7 +72,6 @@ class _MakerHomeState extends State<MakerHome> {
         )
             .then((value) {
           String temp1 = notification.body.toString();
-          print(temp1);
           Map temp = jsonDecode(temp1);
           Navigator.push(
             context,

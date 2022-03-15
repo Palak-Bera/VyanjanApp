@@ -133,22 +133,22 @@ class _UserCartState extends State<OrderHistory> {
                   ),
                   height30,
 
-                  /// [Completed Orders title]
-                  Row(
-                    children: [
-                      CustomText(
-                        text: "Completed Orders",
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      // Icon(Icons.de)
-                    ],
-                  ),
-                  Divider(
-                    color: grey,
-                  ),
-
-                  /// [Completed orders]
+                  // /// [Completed Orders title]
+                  // Row(
+                  //   children: [
+                  //     CustomText(
+                  //       text: "Completed Orders",
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w600,
+                  //     ),
+                  //     // Icon(Icons.de)
+                  //   ],
+                  // ),
+                  // Divider(
+                  //   color: grey,
+                  // ),
+                  //
+                  // /// [Completed orders]
                 ],
               ),
             ),
@@ -158,16 +158,16 @@ class _UserCartState extends State<OrderHistory> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: CustomButton(
-            text: "Proceed for Further",
-            onpressed: () {},
-          ),
-        ),
-      ),
+      // bottomNavigationBar: BottomAppBar(
+      //   elevation: 2,
+      //   child: Padding(
+      //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      //     child: CustomButton(
+      //       text: "Proceed for Further",
+      //       onpressed: () {},
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

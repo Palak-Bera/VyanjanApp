@@ -55,8 +55,6 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    bool checkSelected = false;
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -97,18 +95,6 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                         CustomText(text: "Your Address Details", fontSize: 15),
                       ],
                     ),
-                    // CircleAvatar(
-                    //   backgroundColor: primaryGreen,
-                    //   radius: 45.0,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(5.0),
-                    //     child: CircleAvatar(
-                    //       radius: 45.0,
-                    //       backgroundImage:
-                    //           AssetImage('assets/images/person.jpeg'),
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
 
@@ -185,39 +171,11 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                 ),
                 height10,
 
-                // tag location
-                CustomText(text: "Tag this location for *"),
-                height10,
-                Container(
-                  height: 30.0,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Tag(
-                        text: 'Home',
-                        onTap: () {},
-                      ),
-                      Tag(
-                        text: 'Work',
-                        onTap: () {},
-                      ),
-                      Tag(
-                        text: 'Hotel',
-                        onTap: () {},
-                      ),
-                      Tag(
-                        text: 'Other',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
-
-                height20,
                 // phone number field
                 TextFormField(
                   controller: _phoneNoController,
                   onChanged: (value) {},
+                  enabled: false,
                   decoration: InputDecoration(
                     // suffix: CustomText(
                     //   text: 'VERIFY',
@@ -232,16 +190,12 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                   cursorColor: primaryGreen,
                   keyboardType: TextInputType.number,
                 ),
+                height20,
                 // email address
                 TextFormField(
                   controller: _emailController,
                   onChanged: (value) {},
                   decoration: InputDecoration(
-                    // suffix: CustomText(
-                    //   text: 'VERIFY',
-                    //   color: primaryGreen,
-                    //   fontSize: 12.0,
-                    // ),
                     label: Text('Email Address'),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: primaryGreen),
@@ -250,30 +204,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                   cursorColor: primaryGreen,
                   keyboardType: TextInputType.emailAddress,
                 ),
-
-                // Check Box
-                // Row(
-                //   children: <Widget>[
-                //     Checkbox(
-                //       value: checkSelected,
-                //       checkColor: white,
-                //       activeColor: primaryGreen,
-                //       onChanged: (value) {
-                //         setState(() {
-                //           print(value!);
-                //           checkSelected = value;
-                //         });
-                //       },
-                //       fillColor: MaterialStateProperty.all(primaryGreen),
-                //     ),
-                //     Expanded(
-                //       child: CustomText(
-                //         text: "Save this details for your future orders",
-                //         softwrap: true,
-                //       ),
-                //     )
-                //   ],
-                // ),
+                height20,
 
                 ElevatedButton(
                   onPressed: () {

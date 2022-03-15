@@ -153,7 +153,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   Future<void> vendorPayout() async {
     double amt = widget.deliveryMode == "Doorstep Delivery"
         ? ((cart.getTotalAmount() * 100) + 50 * 100)
-        : cart.getTotalAmount();
+        : cart.getTotalAmount() * 100;
     print('Payout amt: ' + amt.toString());
     print('Payout amt: ' + (amt * 0.8).toString());
 

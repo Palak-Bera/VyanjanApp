@@ -86,11 +86,8 @@ class _SeekerHomeState extends State<SeekerHome> {
     LocationData _locationData;
 
     _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
+    while (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
     }
 
     _permissionGranted = await location.hasPermission();
