@@ -77,6 +77,7 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
               height20,
               TextFormField(
                 controller: _ifscController,
+                maxLength: 11,
                 validator: (value) {
                   if (value!.isEmpty || value == null || value.length < 11)
                     return 'Please Enter valid IFSC Code';
@@ -93,6 +94,7 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   hintText: 'IFSC Code *',
+                  counterText: '',
                   suffix: isIFSCValid
                       ? Icon(
                           Icons.check_circle,
@@ -109,6 +111,9 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
                                 isIFSCValid = true;
                               });
                               print(response);
+                            } else {
+                              print('error');
+                              //_formKey.currentState!.validate();
                             }
                           },
                           child: Text(
@@ -136,7 +141,7 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
                           getDeviceToken();
 
                           preferences.setString('UserState', 'Maker');
-                          preferences.setBool('status', true);
+                          preferences.setBool('status', false);
                           Navigator.pushNamedAndRemoveUntil(
                               context, makerHomeRoute, (route) => false);
                         });
@@ -178,9 +183,13 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
     var url = Uri.parse('https://api.razorpay.com/v1/contacts');
     var res = await http.post(url, headers: headers, body: jsonEncode(data));
     var response = jsonDecode(res.body);
-    if (res.statusCode == 200) {
+    if (res.statusCode.toString()[0] == '2') {
+      print(res.statusCode);
       print(response['id']);
       await createMakerFundAccount(response['id']);
+    } else {
+      print('error');
+      print(res.body);
     }
   }
 
@@ -207,7 +216,9 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
 
     var url = Uri.parse('https://api.razorpay.com/v1/fund_accounts/');
     var res = await http.post(url, headers: headers, body: jsonEncode(data));
-    if (res.statusCode == 200) {
+    if (res.statusCode.toString()[0] == '2') {
+      print(res.statusCode);
+      print(res.statusCode.toString()[0]);
       var response = jsonDecode(res.body);
       print(response['id']);
       makerRef.doc(auth.currentUser!.phoneNumber).update({
@@ -218,6 +229,7 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
       });
     } else {
       print(res.statusCode);
+      print(res.statusCode.toString()[0]);
       print(res.body);
       var response = jsonDecode(res.body);
       print(response['id']);

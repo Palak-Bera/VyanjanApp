@@ -144,21 +144,7 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
           GetBuilder<SearchBar>(
             init: SearchBar(),
             builder: (val) {
-              return Padding(
-                padding: EdgeInsets.only(top: 15.0),
-                child: IconButton(
-                    color: primaryGreen,
-                    iconSize: 30.0,
-                    onPressed: () {
-                      val.queryData(_searchController.value.text).then((value) {
-                        querySnapshot = value;
-                        setState(() {
-                          isExecuted = true;
-                        });
-                      });
-                    },
-                    icon: Icon(Icons.search)),
-              );
+              return Container();
             },
           ),
         ],
@@ -202,7 +188,9 @@ class _AvailableFoodMakerState extends State<AvailableFoodMaker> {
               prefixIcon: IconButton(
                 icon: Icon(Icons.arrow_back_ios_outlined),
                 color: primaryGreen,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
               hintText: 'Food Maker Name or dish',
               border: OutlineInputBorder(

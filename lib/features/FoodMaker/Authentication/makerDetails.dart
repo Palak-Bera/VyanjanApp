@@ -284,7 +284,9 @@ class _MakerDetailsState extends State<MakerDetails> {
                                     ' ' +
                                     _pincodeController.value.text
                                 : makerFinalAddress,
-                            'city': makerCity[makerCity.length - 3],
+                            'city': makerFinalAddress == ''
+                                ? _cityController.value.text
+                                : makerCity[makerCity.length - 3],
                             'status': true
                           };
                           Navigator.push(
