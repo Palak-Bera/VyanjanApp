@@ -6,6 +6,7 @@ import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:libphonenumber/libphonenumber.dart' as libPhone;
 
 /// Register Page for [Food Maker]
 class MakerLogin extends StatefulWidget {
@@ -25,6 +26,8 @@ class _MakerLoginState extends State<MakerLogin> {
 
   @override
   Widget build(BuildContext context) {
+    PhoneNumber phoneNumber = PhoneNumber();
+    bool? isValid;
     return Scaffold(
       backgroundColor: white,
       body: SafeArea(
@@ -56,23 +59,17 @@ class _MakerLoginState extends State<MakerLogin> {
                           key: _phoneNoKey,
                           child: InternationalPhoneNumberInput(
                             ignoreBlank: true,
-                            initialValue: PhoneNumber(
-                                isoCode: 'IN',
-                                phoneNumber: '',
-                                dialCode: '+91'),
                             textFieldController: phoneController,
                             maxLength: 12,
                             onInputChanged: (value) {
+                              phoneNumber = value;
                               phoneNo = value.toString();
                             },
                             validator: (phone) {
                               print(phoneController.value.text
                                   .replaceAll(' ', ''));
                               if (phoneController.value.text.isEmpty ||
-                                  phoneController.value.text
-                                          .replaceAll(' ', '')
-                                          .length !=
-                                      10) {
+                                  !isValid!) {
                                 return 'Invalid Phone Number';
                               } else {
                                 return null;
@@ -97,6 +94,12 @@ class _MakerLoginState extends State<MakerLogin> {
                           child: CustomButton(
                               text: 'Login Now',
                               onpressed: () async {
+                                print(phoneNo);
+                                isValid = await libPhone.PhoneNumberUtil
+                                    .isValidPhoneNumber(
+                                        phoneNumber: phoneNo,
+                                        isoCode: phoneNumber.isoCode!);
+                                print(isValid);
                                 if (_phoneNoKey.currentState!.validate()) {
                                   setState(() {
                                     _loading = true;

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
@@ -23,7 +24,7 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
   TextEditingController _accNumberController = TextEditingController();
   TextEditingController _ifscController = TextEditingController();
 
-  bool isIFSCValid = false;
+  bool isIFSCValid = false, ids = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
               TextFormField(
                 controller: _accNumberController,
                 validator: (value) {
-                  if (value!.isEmpty || value == null || value.length < 14)
+                  if (value!.isEmpty)
                     return 'Please Enter your Account Number';
                   else
                     return null;
@@ -138,12 +139,14 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
                           await createMakerContact(
                               widget.makerDetailsMap['name']);
 
-                          getDeviceToken();
+                          if (ids) {
+                            getDeviceToken();
 
-                          preferences.setString('UserState', 'Maker');
-                          preferences.setBool('status', false);
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, makerHomeRoute, (route) => false);
+                            preferences.setString('UserState', 'Maker');
+                            preferences.setBool('status', false);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, makerHomeRoute, (route) => false);
+                          }
                         });
                       }
                     }),
@@ -189,6 +192,8 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
       await createMakerFundAccount(response['id']);
     } else {
       print('error');
+      Fluttertoast.showToast(
+          msg: 'Some error occurred, Please try again later');
       print(res.body);
     }
   }
@@ -226,19 +231,14 @@ class _MakerBankDetailsState extends State<MakerBankDetails> {
           'contact_id': contact_id,
           'fundAcc_id': response['id']
         }
+      }).then((value) {
+        ids = true;
       });
     } else {
       print(res.statusCode);
-      print(res.statusCode.toString()[0]);
+      Fluttertoast.showToast(
+          msg: 'Some error occurred, Please try again later');
       print(res.body);
-      var response = jsonDecode(res.body);
-      print(response['id']);
-      makerRef.doc(auth.currentUser!.phoneNumber).update({
-        'accountDetails': {
-          'contact_id': contact_id,
-          'fundAcc_id': response['id']
-        }
-      });
     }
   }
 }

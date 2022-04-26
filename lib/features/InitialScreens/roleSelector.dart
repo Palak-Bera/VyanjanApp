@@ -94,6 +94,7 @@ class _RoleSelectorState extends State<RoleSelector> {
                             setState(() {
                               role = 'Seeker';
                             });
+                            Navigator.pushNamed(context, seekerHomeRoute);
                           },
                           child: CustomText(
                             text: 'Food Seeker',
@@ -118,6 +119,8 @@ class _RoleSelectorState extends State<RoleSelector> {
                             setState(() {
                               role = 'Maker';
                             });
+                            Navigator.pushNamed(
+                                context, foodMakerRegisterRoute);
                           },
                           child: CustomText(
                             text: 'Food Maker',
@@ -135,20 +138,20 @@ class _RoleSelectorState extends State<RoleSelector> {
                   ),
 
                   /// [Continue Button]
-                  MaterialButton(
-                    onPressed: () {
-                      if (role == 'Seeker')
-                        Navigator.pushNamed(context, seekerHomeRoute);
-                      else if (role == 'Maker')
-                        Navigator.pushNamed(context, foodMakerRegisterRoute);
-                    },
-                    color: primaryGreen,
-                    child: CustomText(
-                      text: 'Continue',
-                      color: white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
+                  // MaterialButton(
+                  //   onPressed: () {
+                  //     if (role == 'Seeker')
+                  //       Navigator.pushNamed(context, seekerHomeRoute);
+                  //     else if (role == 'Maker')
+                  //       Navigator.pushNamed(context, foodMakerRegisterRoute);
+                  //   },
+                  //   color: primaryGreen,
+                  //   child: CustomText(
+                  //     text: 'Continue',
+                  //     color: white,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // )
                 ],
               ),
             ),
