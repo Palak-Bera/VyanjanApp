@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:food_app/features/FoodSeeker/Home/seekerHome.dart';
 import 'package:food_app/features/FoodSeeker/Home/widgets/itemCard.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
@@ -27,6 +28,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
   String _address = '';
   String _phoneNo = '';
   String _email = '';
+  String _country = '';
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
         _addressController.text = _address;
         _phoneNoController.text = _phoneNo;
         _emailController.text = _email;
+        _country = _address.split(',').last;
       });
     });
   }
@@ -87,6 +90,10 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                           fontWeight: FontWeight.w500,
                         ),
                         CustomText(
+                          text: _phoneNo,
+                          fontSize: 15,
+                        ),
+                        CustomText(
                           text: "Food Seeker",
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -113,7 +120,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                     fontSize: 18,
                   ),
                   subtitle: CustomText(
-                    text: "India",
+                    text: _country,
                     color: primaryGreen,
                     fontSize: 15,
                   ),
@@ -128,10 +135,12 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                             lat: _locationData.latitude!,
                             long: _locationData.longitude!,
                             callback: (value) {
-                              var seekerCity = value.split(',');
                               setState(() {
-                                _addressController.text = value;
-                                _city = seekerCity[seekerCity.length - 3];
+                                _addressController.text =
+                                    value.first.addressLine!;
+                                _city = value.first.locality;
+                                _country =
+                                    _addressController.text.split(',').last;
                                 print('CITY: ' + _city);
                               });
                             },
@@ -169,28 +178,8 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                     ),
                   ),
                 ),
-                height10,
-
-                // phone number field
-                TextFormField(
-                  controller: _phoneNoController,
-                  onChanged: (value) {},
-                  enabled: false,
-                  decoration: InputDecoration(
-                    // suffix: CustomText(
-                    //   text: 'VERIFY',
-                    //   color: primaryGreen,
-                    //   fontSize: 12.0,
-                    // ),
-                    label: Text('Phone Number'),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: primaryGreen),
-                    ),
-                  ),
-                  cursorColor: primaryGreen,
-                  keyboardType: TextInputType.number,
-                ),
                 height20,
+
                 // email address
                 TextFormField(
                   controller: _emailController,
@@ -209,8 +198,11 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                 ElevatedButton(
                   onPressed: () {
                     auth.signOut().then((value) => {
+                          print(auth.currentUser.toString()),
+                          isSeekerLoggedIn = false,
+                          cart.deleteAllCart(),
                           Navigator.pushNamedAndRemoveUntil(
-                              context, seekerHomeRoute, (route) => false)
+                              context, roleSelectorRoute, (route) => false)
                         });
                   },
                   child: Text('Logout'),
@@ -226,10 +218,9 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
             child: CustomButton(
               text: "Save Changes",
               onpressed: () {
-                var seekerCity = _addressController.value.text.split(',');
                 seekerRef.doc(auth.currentUser!.phoneNumber).update({
                   'address': _addressController.value.text,
-                  'city': seekerCity[seekerCity.length - 3],
+                  'city': _city,
                   'email': _emailController.value.text
                 }).then((value) => {
                       Fluttertoast.showToast(msg: 'Changes Saved'),

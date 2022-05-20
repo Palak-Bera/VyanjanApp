@@ -3,11 +3,11 @@ import 'package:flutter_geocoder/geocoder.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-typedef StringValue = void Function(String);
+typedef AddressValue = void Function(dynamic);
 
 class GoogleMapScreen extends StatefulWidget {
   final double lat, long;
-  StringValue callback;
+  AddressValue callback;
   GoogleMapScreen(
       {Key? key, required this.lat, required this.long, required this.callback})
       : super(key: key);
@@ -20,6 +20,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   String searchAddress = '';
   String finalAddress = '';
+  late var address;
 
   @override
   void initState() {
@@ -30,10 +31,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   getAddress(double latitude, double longitude) async {
     final coordinates = new Coordinates(latitude, longitude);
-    var address =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    address = await Geocoder.local.findAddressesFromCoordinates(coordinates);
     setState(() {
       finalAddress = address.first.addressLine!;
+      print(address.first.toMap());
       print(finalAddress);
     });
   }
@@ -125,7 +126,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                     //     context,
                     //     MaterialPageRoute(
                     //         builder: (context) => MakerDetails(finalAddress)));
-                    widget.callback(finalAddress);
+                    widget.callback(address);
                     Navigator.pop(context);
                   },
                   child: Text('Confirm'),

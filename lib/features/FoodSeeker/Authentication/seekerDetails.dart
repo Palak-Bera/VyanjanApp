@@ -17,6 +17,7 @@ class SeekerDetails extends StatefulWidget {
 
 class _SeekerDetailsState extends State<SeekerDetails> {
   String seekerFinalAddress = '';
+  String seekerCity = '';
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -129,14 +130,13 @@ class _SeekerDetailsState extends State<SeekerDetails> {
                     text: 'Continue',
                     onpressed: () {
                       if (_formKey.currentState!.validate()) {
-                        var seekerCity = seekerFinalAddress.split(',');
                         seekerRef.doc(auth.currentUser!.phoneNumber).set({
                           'firstName': _firstNameController.value.text,
                           'lastName': _lastNameController.value.text,
                           'phoneNo': auth.currentUser!.phoneNumber,
                           'email': _emailController.value.text,
                           'address': seekerFinalAddress,
-                          'city': seekerCity[seekerCity.length - 3]
+                          'city': seekerCity
                         }).then((value) => {
                               preferences.setString('UserState', 'Seeker'),
                               Navigator.pushNamedAndRemoveUntil(
@@ -185,7 +185,8 @@ class _SeekerDetailsState extends State<SeekerDetails> {
           lat: _locationData.latitude!,
           long: _locationData.longitude!,
           callback: (value) {
-            seekerFinalAddress = value;
+            seekerCity = value.first.locality!;
+            seekerFinalAddress = value.first.addressLine!;
             setState(() {});
           },
         ),

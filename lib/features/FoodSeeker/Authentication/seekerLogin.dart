@@ -23,9 +23,10 @@ class _SeekerLoginState extends State<SeekerLogin> {
   String phoneNo = '';
   bool isUser = false;
 
+  PhoneNumber number = PhoneNumber(isoCode: 'IN');
+
   @override
   Widget build(BuildContext context) {
-    PhoneNumber phoneNumber = PhoneNumber();
     bool? isValid;
     return Scaffold(
       backgroundColor: white,
@@ -57,9 +58,10 @@ class _SeekerLoginState extends State<SeekerLogin> {
                       child: InternationalPhoneNumberInput(
                         ignoreBlank: true,
                         textFieldController: phoneController,
-                        maxLength: 12,
+                        maxLength: 15,
+                        initialValue: number,
                         onInputChanged: (value) {
-                          phoneNumber = value;
+                          number = value;
                           phoneNo = value.toString();
                         },
                         validator: (phone) {
@@ -91,7 +93,7 @@ class _SeekerLoginState extends State<SeekerLogin> {
                             isValid = await libPhone.PhoneNumberUtil
                                 .isValidPhoneNumber(
                                     phoneNumber: phoneNo,
-                                    isoCode: phoneNumber.isoCode!);
+                                    isoCode: number.isoCode!);
                             print(isValid);
                             if (_phoneNoKey.currentState!.validate()) {
                               await seekerRef.get().then((docs) => {
@@ -108,7 +110,7 @@ class _SeekerLoginState extends State<SeekerLogin> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        OTPVerification(phoneNo, isUser),
+                                        OTPVerification(number, isUser),
                                   ),
                                 );
                               } else {

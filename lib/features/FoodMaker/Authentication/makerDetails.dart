@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:food_app/features/FoodMaker/Authentication/makerBankDetails.dart';
 import 'package:food_app/resources/colors.dart';
@@ -9,6 +7,7 @@ import 'package:food_app/widgets/dividers.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:location/location.dart';
 import 'package:food_app/features/CommonScreens/googleMapScreen.dart' as map;
+import 'package:libphonenumber/libphonenumber.dart' as libPhone;
 import 'package:http/http.dart' as http;
 
 /// Screen for taking [Restaurant details]
@@ -16,10 +15,14 @@ import 'package:http/http.dart' as http;
 class MakerDetails extends StatefulWidget {
   @override
   _MakerDetailsState createState() => _MakerDetailsState();
+
+  final PhoneNumber number;
+  MakerDetails({required this.number});
 }
 
 class _MakerDetailsState extends State<MakerDetails> {
   String makerFinalAddress = '';
+  String makerCity = '';
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -31,17 +34,29 @@ class _MakerDetailsState extends State<MakerDetails> {
   TextEditingController _stateController = TextEditingController();
   TextEditingController _pincodeController = TextEditingController();
 
-  String makerName = '';
-  String phoneNo = '';
   String _alternatePhoneNo = '';
-  String address = '';
+  bool? isValid;
+  late PhoneNumber number;
+  @override
+  void initState() {
+    super.initState();
+
+    print(widget.number.dialCode);
+    print(widget.number.isoCode);
+    setState(() {
+      number = PhoneNumber(
+          dialCode: widget.number.dialCode, isoCode: widget.number.isoCode);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: CustomAppbar(
-        onBackPressed: () {},
+      appBar: AppBar(
+        backwardsCompatibility: true,
+        elevation: 0.0,
+        backgroundColor: white,
       ),
       body: SingleChildScrollView(
         // controller: controller,
@@ -80,27 +95,27 @@ class _MakerDetailsState extends State<MakerDetails> {
                 height20,
 
                 CustomText(
-                  text: 'Alternative contact number *',
+                  text: 'Alternative contact number',
                 ),
                 height10,
                 InternationalPhoneNumberInput(
                   textFieldController: _phoneNoController,
-                  initialValue: PhoneNumber(
-                      dialCode: '+91', phoneNumber: '', isoCode: 'IN'),
+                  initialValue: number,
                   validator: (value) {
-                    if (_phoneNoController.value.text.isEmpty ||
-                        _phoneNoController.value.text
-                                .replaceAll(' ', '')
-                                .length <
-                            10) {
-                      return 'Invalid Phone Number';
-                    } else {
+                    if (_phoneNoController.value.text.isEmpty) {
                       return null;
+                    } else {
+                      if (!isValid!) {
+                        return 'Invalid Phone Number';
+                      } else {
+                        return null;
+                      }
                     }
                   },
-                  maxLength: 12,
+                  maxLength: 15,
                   ignoreBlank: true,
                   onInputChanged: (value) {
+                    number = value;
                     _alternatePhoneNo = value.toString();
                   },
                   inputBorder: OutlineInputBorder(
@@ -265,14 +280,19 @@ class _MakerDetailsState extends State<MakerDetails> {
                   width: MediaQuery.of(context).size.width,
                   child: CustomButton(
                       text: 'Continue',
-                      onpressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          var makerCity = makerFinalAddress.split(',');
+                      onpressed: () async {
+                        if (_phoneNoController.value.text.isNotEmpty) {
+                          isValid =
+                              await libPhone.PhoneNumberUtil.isValidPhoneNumber(
+                                  phoneNumber: _alternatePhoneNo,
+                                  isoCode: number.isoCode!);
+                        }
 
+                        if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> _makerDetailsMap = {
                             'name': _nameController.value.text,
                             'phoneNo': auth.currentUser!.phoneNumber,
-                            'alternatePhoneNo': _alternatePhoneNo,
+                            'alternatePhoneNo': _phoneNoController.value.text,
                             'address': makerFinalAddress == ''
                                 ? _buildingController.value.text +
                                     ' ' +
@@ -286,7 +306,7 @@ class _MakerDetailsState extends State<MakerDetails> {
                                 : makerFinalAddress,
                             'city': makerFinalAddress == ''
                                 ? _cityController.value.text
-                                : makerCity[makerCity.length - 3],
+                                : makerCity,
                             'status': true
                           };
                           Navigator.push(
@@ -297,30 +317,6 @@ class _MakerDetailsState extends State<MakerDetails> {
                               ),
                             ),
                           );
-                          // makerRef.doc(auth.currentUser!.phoneNumber).set({
-                          //   'name': _nameController.value.text,
-                          //   'phoneNo': auth.currentUser!.phoneNumber,
-                          //   'alternatePhoneNo': _alternatePhoneNo,
-                          //   'address': makerFinalAddress == ''
-                          //       ? _buildingController.value.text +
-                          //           ' ' +
-                          //           _landmarkController.value.text +
-                          //           ' ' +
-                          //           _cityController.value.text +
-                          //           ' ' +
-                          //           _stateController.value.text +
-                          //           ' ' +
-                          //           _pincodeController.value.text
-                          //       : makerFinalAddress,
-                          //   'city': makerCity[makerCity.length - 3],
-                          //   'status': true
-                          // }).then((value) async {
-                          //   // await createMakerContact(
-                          //   //     _nameController.value.text);
-                          //   //preferences.setString('UserState', 'Maker');
-                          //   //preferences.setBool('status', true);
-
-                          //});
                         }
                       }),
                 ),
@@ -364,7 +360,8 @@ class _MakerDetailsState extends State<MakerDetails> {
           lat: _locationData.latitude!,
           long: _locationData.longitude!,
           callback: (value) {
-            makerFinalAddress = value;
+            makerCity = value.first.locality;
+            makerFinalAddress = value.first.addressLine!;
             setState(() {});
           },
         ),

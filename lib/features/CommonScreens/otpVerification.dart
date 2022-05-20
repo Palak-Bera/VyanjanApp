@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:food_app/features/FoodMaker/Authentication/makerDetails.dart';
 import 'package:food_app/resources/colors.dart';
 import 'package:food_app/routes/constants.dart';
 import 'package:food_app/widgets/customWidgets.dart';
 import 'package:food_app/widgets/dividers.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// a function which will be called after entring OTP as [onSubmit]
 
 class OTPVerification extends StatefulWidget {
-  final String phoneNumber;
+  final PhoneNumber phoneNumber;
   final bool isUser;
   OTPVerification(this.phoneNumber, this.isUser);
 
@@ -70,7 +72,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                   children: [
                     CustomText(text: 'Enter the 6 digit OTP sent on '),
                     CustomText(
-                      text: '${widget.phoneNumber}',
+                      text: '${widget.phoneNumber.phoneNumber}',
                       color: primaryGreen,
                     ),
                   ],
@@ -140,16 +142,13 @@ class _OTPVerificationState extends State<OTPVerification> {
                                                   (route) => false)
                                             });
                                   } else {
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        makerDetailRoute, (route) => false);
-                                    // makerRef.doc(widget.phoneNumber).set({
-                                    //   'phoneNo': widget.phoneNumber,
-                                    // }).then((value) => {
-                                    //       preferences.setString(
-                                    //           'UserState', 'MakerDetail'),
-                                    //       Navigator.pushNamedAndRemoveUntil(context,
-                                    //           makerDetailRoute, (route) => false)
-                                    //     });
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MakerDetails(
+                                              number: widget.phoneNumber),
+                                        ),
+                                        (route) => false);
                                   }
                                   break;
                                 }
@@ -184,14 +183,14 @@ class _OTPVerificationState extends State<OTPVerification> {
                     onChanged: (val) {},
                   ),
                 ),
-                OutlinedButton(
-                    onPressed: () {}, child: CustomText(text: 'Resend')),
-                // OutlinedButton(onPressed: () {}, child: CustomText(text: 'Try other methods')),
-                height10,
-                CustomButton(
-                  text: 'Submit',
-                  onpressed: () {},
-                )
+                // OutlinedButton(
+                //     onPressed: () {}, child: CustomText(text: 'Resend')),
+                // // OutlinedButton(onPressed: () {}, child: CustomText(text: 'Try other methods')),
+                // height10,
+                // CustomButton(
+                //   text: 'Submit',
+                //   onpressed: () {},
+                // )
               ],
             ),
             _loading
@@ -222,15 +221,56 @@ class _OTPVerificationState extends State<OTPVerification> {
 
   _verifyPhone() async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: widget.phoneNumber,
+      phoneNumber: widget.phoneNumber.phoneNumber!,
       verificationCompleted: (PhoneAuthCredential credential) async {
         print("2");
         await FirebaseAuth.instance
             .signInWithCredential(credential)
             .then((value) async {
           if (value.user != null) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, makerDetailRoute, (route) => false);
+            switch (role) {
+              case 'Maker':
+                {
+                  if (widget.isUser) {
+                    preferences.setString('UserState', 'Maker');
+                    bool status = false;
+                    makerRef
+                        .doc(auth.currentUser!.phoneNumber)
+                        .get()
+                        .then((value) => {
+                              status = value.get('status'),
+                              print('status: ' + status.toString()),
+                              preferences.setBool('status', status),
+                              getDeviceToken()
+                            })
+                        .whenComplete(() => {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, makerHomeRoute, (route) => false)
+                            });
+                  } else {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MakerDetails(number: widget.phoneNumber),
+                        ),
+                        (route) => false);
+                  }
+                  break;
+                }
+              case 'Seeker':
+                {
+                  if (widget.isUser) {
+                    preferences.setString('UserState', 'Seeker');
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, seekerHomeRoute, (route) => false);
+                  } else {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, seekerDetailRoute, (route) => false);
+                  }
+                  break;
+                }
+            }
           }
         });
       },

@@ -217,7 +217,7 @@ class _SeekerCartState extends State<SeekerCart> {
               color: choosePref != "" ? primaryGreen : Colors.grey[400],
               onPressed: choosePref != ""
                   ? () {
-                      if (auth.currentUser != null) {
+                      if (isSeekerLoggedIn) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -234,9 +234,7 @@ class _SeekerCartState extends State<SeekerCart> {
                       return null;
                     },
               child: CustomText(
-                text: auth.currentUser != null
-                    ? "Continue"
-                    : "Sign In to Continue",
+                text: isSeekerLoggedIn ? "Continue" : "Sign In to Continue",
                 fontWeight: FontWeight.bold,
                 color: white,
               ),

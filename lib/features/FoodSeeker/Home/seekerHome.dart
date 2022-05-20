@@ -51,6 +51,7 @@ class _SeekerHomeState extends State<SeekerHome> {
         .doc(auth.currentUser!.phoneNumber)
         .snapshots()
         .forEach((element) {
+      isSeekerLoggedIn = element.exists;
       setState(() {
         _name = element.get('firstName') + ' ' + element.get('lastName');
       });
@@ -116,8 +117,9 @@ class _SeekerHomeState extends State<SeekerHome> {
       var address =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
       setState(() {
+        print(address.first.toMap());
         var arr = address.first.addressLine!.split(',');
-        _city = arr[arr.length - 3];
+        _city = address.first.locality!;
         _country = arr[arr.length - 1];
         print(arr);
       });
@@ -183,7 +185,7 @@ class _SeekerHomeState extends State<SeekerHome> {
 
                             /// [Username]
 
-                            auth.currentUser != null
+                            isSeekerLoggedIn
                                 ? Expanded(
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,

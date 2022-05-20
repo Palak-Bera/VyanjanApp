@@ -31,9 +31,10 @@ class _MakerRegisterState extends State<MakerRegister> {
     super.initState();
   }
 
+  PhoneNumber number = PhoneNumber(isoCode: 'IN');
+
   @override
   Widget build(BuildContext context) {
-    PhoneNumber phoneNumber = PhoneNumber();
     bool? isValid;
     return Scaffold(
       backgroundColor: white,
@@ -67,9 +68,10 @@ class _MakerRegisterState extends State<MakerRegister> {
                           child: InternationalPhoneNumberInput(
                             ignoreBlank: true,
                             textFieldController: phoneController,
-                            maxLength: 12,
+                            initialValue: number,
+                            maxLength: 15,
                             onInputChanged: (value) {
-                              phoneNumber = value;
+                              number = value;
                               phoneNo = value.toString();
                             },
                             validator: (phone) {
@@ -105,7 +107,7 @@ class _MakerRegisterState extends State<MakerRegister> {
                                 isValid = await libPhone.PhoneNumberUtil
                                     .isValidPhoneNumber(
                                         phoneNumber: phoneNo,
-                                        isoCode: phoneNumber.isoCode!);
+                                        isoCode: number.isoCode!);
                                 print(isValid);
                                 if (_phoneNoKey.currentState!.validate()) {
                                   isUser = false;
@@ -135,7 +137,7 @@ class _MakerRegisterState extends State<MakerRegister> {
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         OTPVerification(
-                                                            phoneNo, isUser),
+                                                            number, isUser),
                                                   ),
                                                 )
                                               }
@@ -150,7 +152,7 @@ class _MakerRegisterState extends State<MakerRegister> {
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       OTPVerification(
-                                                          phoneNo, isUser),
+                                                          number, isUser),
                                                 ))
                                           }
                                       });

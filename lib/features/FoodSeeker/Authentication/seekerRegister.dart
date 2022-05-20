@@ -20,9 +20,11 @@ class _SeekerRegisterState extends State<SeekerRegister> {
   String phoneNo = '';
   bool isUser = false;
 
+  PhoneNumber number = PhoneNumber(isoCode: 'IN');
+
   @override
   Widget build(BuildContext context) {
-    PhoneNumber phoneNumber = PhoneNumber();
+    // PhoneNumber validatorPhoneNumber = PhoneNumber();
     bool? isValid;
     return Scaffold(
       backgroundColor: white,
@@ -53,10 +55,11 @@ class _SeekerRegisterState extends State<SeekerRegister> {
                       key: _phoneNoKey,
                       child: InternationalPhoneNumberInput(
                         ignoreBlank: true,
+                        initialValue: number,
                         textFieldController: phoneController,
-                        maxLength: 12,
+                        maxLength: 15,
                         onInputChanged: (value) {
-                          phoneNumber = value;
+                          number = value;
                           phoneNo = value.toString();
                         },
                         validator: (phone) {
@@ -88,7 +91,7 @@ class _SeekerRegisterState extends State<SeekerRegister> {
                             isValid = await libPhone.PhoneNumberUtil
                                 .isValidPhoneNumber(
                                     phoneNumber: phoneNo,
-                                    isoCode: phoneNumber.isoCode!);
+                                    isoCode: number.isoCode!);
                             print(isValid);
                             if (_phoneNoKey.currentState!.validate()) {
                               isUser = false;
@@ -109,7 +112,7 @@ class _SeekerRegisterState extends State<SeekerRegister> {
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       OTPVerification(
-                                                          phoneNo, isUser),
+                                                          number, isUser),
                                                 ))
                                           }
                                       }
@@ -120,7 +123,7 @@ class _SeekerRegisterState extends State<SeekerRegister> {
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   OTPVerification(
-                                                      phoneNo, isUser),
+                                                      number, isUser),
                                             ))
                                       }
                                   });

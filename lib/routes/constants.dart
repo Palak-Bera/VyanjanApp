@@ -26,6 +26,8 @@ const String restaurantOwnerRoute = '/OwnerDetails';
 const String makerHomeRoute = '/MakerHome';
 const String notificationBannerRoute = '/NotificationBanner';
 
+bool isSeekerLoggedIn = false;
+
 /// Routes for [Common Screen]
 const String otpRoute = '/OTPVerification';
 const String roleSelectorRoute = '/RoleSelector';

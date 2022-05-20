@@ -87,7 +87,7 @@ class _RoleSelectorState extends State<RoleSelector> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             /// route For [Food Seeker Login] page
                             //  Navigator.pushNamed(context, foodSeekerRoute);
@@ -98,13 +98,10 @@ class _RoleSelectorState extends State<RoleSelector> {
                           },
                           child: CustomText(
                             text: 'Food Seeker',
-                            color: primaryBlack,
+                            color: white,
                           ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                                color: role == 'Seeker'
-                                    ? primaryGreen
-                                    : Colors.grey.shade400),
+                          style: ElevatedButton.styleFrom(
+                            primary: primaryGreen,
                           ),
                         ),
                         CustomText(
@@ -112,7 +109,7 @@ class _RoleSelectorState extends State<RoleSelector> {
                           color: primaryBlack,
                           fontWeight: FontWeight.bold,
                         ),
-                        OutlinedButton(
+                        ElevatedButton(
                           onPressed: () {
                             /// route For [Food Maker Login] page
                             // Navigator.pushNamed(context, foodMakerRoute);
@@ -124,13 +121,10 @@ class _RoleSelectorState extends State<RoleSelector> {
                           },
                           child: CustomText(
                             text: 'Food Maker',
-                            color: primaryBlack,
+                            color: white,
                           ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                                color: role == 'Maker'
-                                    ? primaryGreen
-                                    : Colors.grey.shade400),
+                          style: ElevatedButton.styleFrom(
+                            primary: primaryGreen,
                           ),
                         )
                       ],

@@ -24,9 +24,10 @@ class _MakerLoginState extends State<MakerLogin> {
 
   bool _loading = false;
 
+  PhoneNumber number = PhoneNumber(isoCode: 'IN');
+
   @override
   Widget build(BuildContext context) {
-    PhoneNumber phoneNumber = PhoneNumber();
     bool? isValid;
     return Scaffold(
       backgroundColor: white,
@@ -60,9 +61,10 @@ class _MakerLoginState extends State<MakerLogin> {
                           child: InternationalPhoneNumberInput(
                             ignoreBlank: true,
                             textFieldController: phoneController,
-                            maxLength: 12,
+                            maxLength: 15,
+                            initialValue: number,
                             onInputChanged: (value) {
-                              phoneNumber = value;
+                              number = value;
                               phoneNo = value.toString();
                             },
                             validator: (phone) {
@@ -98,7 +100,7 @@ class _MakerLoginState extends State<MakerLogin> {
                                 isValid = await libPhone.PhoneNumberUtil
                                     .isValidPhoneNumber(
                                         phoneNumber: phoneNo,
-                                        isoCode: phoneNumber.isoCode!);
+                                        isoCode: number.isoCode!);
                                 print(isValid);
                                 if (_phoneNoKey.currentState!.validate()) {
                                   setState(() {
@@ -121,7 +123,7 @@ class _MakerLoginState extends State<MakerLogin> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            OTPVerification(phoneNo, isUser),
+                                            OTPVerification(number, isUser),
                                       ),
                                     );
                                   } else {

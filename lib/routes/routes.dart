@@ -43,9 +43,6 @@ class Routes {
       case foodMakerRegisterRoute:
         return MaterialPageRoute(builder: (_) => MakerRegister());
 
-      case makerDetailRoute:
-        return MaterialPageRoute(builder: (_) => MakerDetails());
-
       case restaurantContactRoute:
         return MaterialPageRoute(builder: (_) => RestaurantContact());
 
