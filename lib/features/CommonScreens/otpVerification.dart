@@ -46,152 +46,172 @@ class _OTPVerificationState extends State<OTPVerification> {
         padding: EdgeInsets.all(20.0),
         child: Stack(
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(
-                  text: 'We have sent',
-                  fontSize: 20.0,
-                ),
-                Row(
-                  children: [
-                    CustomText(
-                      text: 'you an ',
-                      fontSize: 20.0,
-                    ),
-                    CustomText(
-                      text: 'OTP',
-                      fontSize: 20.0,
-                      color: primaryGreen,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    CustomText(text: 'Enter the 6 digit OTP sent on '),
-                    CustomText(
-                      text: '${widget.phoneNumber.phoneNumber}',
-                      color: primaryGreen,
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, right: 20.0, top: 30.0, bottom: 20.0),
-                  child: PinCodeTextField(
-                    autoFocus: true,
-                    enablePinAutofill: true,
-                    focusNode: _otpFocusNode,
-                    appContext: context,
-                    obscureText: false,
-                    pastedTextStyle: TextStyle(
-                      color: primaryGreen,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    animationType: AnimationType.fade,
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderWidth: 1.0,
-                      borderRadius: BorderRadius.circular(10.0),
-                      fieldHeight: 50,
-                      fieldWidth: 40,
-                      activeFillColor: white,
-                      inactiveColor: Colors.grey,
-                      activeColor: primaryGreen,
-                    ),
-                    animationDuration: Duration(milliseconds: 300),
-                    keyboardType: TextInputType.number,
-                    cursorColor: primaryGreen,
-                    length: 6,
-                    onCompleted: (otp) async {
-                      try {
-                        print("1");
-                        await FirebaseAuth.instance
-                            .signInWithCredential(PhoneAuthProvider.credential(
-                                verificationId: _verificationCode,
-                                smsCode: otp))
-                            .then((value) async {
-                          if (value.user != null) {
-                            setState(() {
-                              _loading = true;
-                            });
-
-                            switch (role) {
-                              case 'Maker':
-                                {
-                                  if (widget.isUser) {
-                                    preferences.setString('UserState', 'Maker');
-                                    bool status = false;
-                                    makerRef
-                                        .doc(auth.currentUser!.phoneNumber)
-                                        .get()
-                                        .then((value) => {
-                                              status = value.get('status'),
-                                              print('status: ' +
-                                                  status.toString()),
-                                              preferences.setBool(
-                                                  'status', status),
-                                              getDeviceToken()
-                                            })
-                                        .whenComplete(() => {
-                                              Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  makerHomeRoute,
-                                                  (route) => false)
-                                            });
-                                  } else {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MakerDetails(
-                                              number: widget.phoneNumber),
-                                        ),
-                                        (route) => false);
-                                  }
-                                  break;
-                                }
-                              case 'Seeker':
-                                {
-                                  if (widget.isUser) {
-                                    preferences.setString(
-                                        'UserState', 'Seeker');
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        seekerHomeRoute, (route) => false);
-                                  } else {
-                                    Navigator.pushNamedAndRemoveUntil(context,
-                                        seekerDetailRoute, (route) => false);
-                                  }
-                                  break;
-                                }
-                            }
-                          }
-                        });
-                      } catch (e) {
-                        FocusScope.of(context).unfocus();
-                        Fluttertoast.showToast(
-                            msg: "Invalid OTP",
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.grey,
-                            textColor: Colors.white,
-                            fontSize: 18.0);
-                      }
-                    },
-                    onChanged: (val) {},
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text: 'We have sent',
+                    fontSize: 20.0,
+                    softwrap: true,
                   ),
-                ),
-                // OutlinedButton(
-                //     onPressed: () {}, child: CustomText(text: 'Resend')),
-                // // OutlinedButton(onPressed: () {}, child: CustomText(text: 'Try other methods')),
-                // height10,
-                // CustomButton(
-                //   text: 'Submit',
-                //   onpressed: () {},
-                // )
-              ],
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: [
+                        CustomText(
+                          text: 'you an ',
+                          fontSize: 20.0,
+                          softwrap: true,
+                        ),
+                        CustomText(
+                          text: 'OTP',
+                          fontSize: 20.0,
+                          color: primaryGreen,
+                          fontWeight: FontWeight.bold,
+                          softwrap: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: 'Enter the 6 digit OTP sent on ',
+                          softwrap: true,
+                        ),
+                        CustomText(
+                          text: '${widget.phoneNumber.phoneNumber}',
+                          color: primaryGreen,
+                          softwrap: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20.0, right: 20.0, top: 30.0, bottom: 20.0),
+                    child: PinCodeTextField(
+                      autoFocus: true,
+                      enablePinAutofill: true,
+                      focusNode: _otpFocusNode,
+                      appContext: context,
+                      obscureText: false,
+                      pastedTextStyle: TextStyle(
+                        color: primaryGreen,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      animationType: AnimationType.fade,
+                      pinTheme: PinTheme(
+                        shape: PinCodeFieldShape.box,
+                        borderWidth: 1.0,
+                        borderRadius: BorderRadius.circular(10.0),
+                        fieldHeight: 50,
+                        fieldWidth: 40,
+                        activeFillColor: white,
+                        inactiveColor: Colors.grey,
+                        activeColor: primaryGreen,
+                      ),
+                      animationDuration: Duration(milliseconds: 300),
+                      keyboardType: TextInputType.number,
+                      cursorColor: primaryGreen,
+                      length: 6,
+                      onCompleted: (otp) async {
+                        try {
+                          print("1");
+                          await FirebaseAuth.instance
+                              .signInWithCredential(
+                                  PhoneAuthProvider.credential(
+                                      verificationId: _verificationCode,
+                                      smsCode: otp))
+                              .then((value) async {
+                            if (value.user != null) {
+                              setState(() {
+                                _loading = true;
+                              });
+
+                              switch (role) {
+                                case 'Maker':
+                                  {
+                                    if (widget.isUser) {
+                                      preferences.setString(
+                                          'UserState', 'Maker');
+                                      bool status = false;
+                                      makerRef
+                                          .doc(auth.currentUser!.phoneNumber)
+                                          .get()
+                                          .then((value) => {
+                                                status = value.get('status'),
+                                                print('status: ' +
+                                                    status.toString()),
+                                                preferences.setBool(
+                                                    'status', status),
+                                                getDeviceToken()
+                                              })
+                                          .whenComplete(() => {
+                                                Navigator
+                                                    .pushNamedAndRemoveUntil(
+                                                        context,
+                                                        makerHomeRoute,
+                                                        (route) => false)
+                                              });
+                                    } else {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => MakerDetails(
+                                                number: widget.phoneNumber),
+                                          ),
+                                          (route) => false);
+                                    }
+                                    break;
+                                  }
+                                case 'Seeker':
+                                  {
+                                    if (widget.isUser) {
+                                      preferences.setString(
+                                          'UserState', 'Seeker');
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          seekerHomeRoute, (route) => false);
+                                    } else {
+                                      Navigator.pushNamedAndRemoveUntil(context,
+                                          seekerDetailRoute, (route) => false);
+                                    }
+                                    break;
+                                  }
+                              }
+                            }
+                          });
+                        } catch (e) {
+                          FocusScope.of(context).unfocus();
+                          Fluttertoast.showToast(
+                              msg: "Invalid OTP",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.grey,
+                              textColor: Colors.white,
+                              fontSize: 18.0);
+                        }
+                      },
+                      onChanged: (val) {},
+                    ),
+                  ),
+                  // OutlinedButton(
+                  //     onPressed: () {}, child: CustomText(text: 'Resend')),
+                  // // OutlinedButton(onPressed: () {}, child: CustomText(text: 'Try other methods')),
+                  // height10,
+                  // CustomButton(
+                  //   text: 'Submit',
+                  //   onpressed: () {},
+                  // )
+                ],
+              ),
             ),
             _loading
                 ? Positioned(

@@ -150,10 +150,12 @@ class _MakerRecipeState extends State<MakerRecipe> {
                         return ListTile(
                           title: CustomText(
                             text: document['name'],
+                            softwrap: true,
                           ),
                           subtitle: CustomText(
                             text: document['description'],
                             color: grey,
+                            softwrap: true,
                           ),
                           trailing: CustomText(
                             text: "₹ " + document['price'],
