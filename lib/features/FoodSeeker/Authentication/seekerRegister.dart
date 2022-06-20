@@ -132,6 +132,7 @@ class _SeekerRegisterState extends State<SeekerRegister> {
                     ),
                     height10,
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomText(text: 'Already registered?  '),
 
@@ -147,54 +148,20 @@ class _SeekerRegisterState extends State<SeekerRegister> {
                         )
                       ],
                     ),
-                    Row(
-                      children: [
-                        Expanded(child: Divider()),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: CustomText(text: 'or'),
-                        ),
-                        Expanded(child: Divider()),
-                      ],
-                    ),
-                    height20,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        /// [Email button]
-                        Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.grey)),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.email_outlined))),
-                        width20,
-
-                        /// [More button]
-                        Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.grey)),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.more_horiz))),
-                      ],
-                    ),
                   ],
                 ),
               ),
-              height10,
+
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CustomText(
-                    text: 'By continuining, you agree to our',
+                    text: 'By continuing, you agree to our',
                     color: Colors.grey,
                     fontSize: 10.0,
                   ),
                   CustomText(
-                    text: 'Terms of Serivce  Privacy Policy  Content Policy',
+                    text: 'Terms of Service  Privacy Policy  Content Policy',
                     color: Colors.grey,
                     fontSize: 10.0,
                   ),

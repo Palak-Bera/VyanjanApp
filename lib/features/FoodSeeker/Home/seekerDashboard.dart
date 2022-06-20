@@ -200,6 +200,7 @@ class _SeekerDashboardState extends State<SeekerDashboard> {
                     auth.signOut().then((value) => {
                           print(auth.currentUser.toString()),
                           isSeekerLoggedIn = false,
+                          preferences.setString('UserState', ''),
                           cart.deleteAllCart(),
                           Navigator.pushNamedAndRemoveUntil(
                               context, roleSelectorRoute, (route) => false)

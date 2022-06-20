@@ -167,25 +167,25 @@ class _MakerMenuState extends State<MakerMenu> {
                 // height20,
 
                 /// [Search option for Food items]
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: TextFormField(
-                    onChanged: (value) {},
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: primaryGreen,
-                      ),
-                      hintText: 'Search within the menu',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(color: grey),
-                      ),
-                    ),
-                    keyboardType: TextInputType.text,
-                    cursorColor: primaryGreen,
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 20, right: 20),
+                //   child: TextFormField(
+                //     onChanged: (value) {},
+                //     decoration: InputDecoration(
+                //       prefixIcon: Icon(
+                //         Icons.search,
+                //         color: primaryGreen,
+                //       ),
+                //       hintText: 'Search within the menu',
+                //       border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10.0),
+                //         borderSide: BorderSide(color: grey),
+                //       ),
+                //     ),
+                //     keyboardType: TextInputType.text,
+                //     cursorColor: primaryGreen,
+                //   ),
+                // ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
@@ -294,7 +294,7 @@ class _MakerMenuState extends State<MakerMenu> {
                     ),
 
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         /// [item price]
                         CustomText(

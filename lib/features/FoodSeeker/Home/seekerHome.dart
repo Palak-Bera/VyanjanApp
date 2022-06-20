@@ -281,7 +281,8 @@ class _SeekerHomeState extends State<SeekerHome> {
                         Expanded(
                           child: makerList.isEmpty
                               ? Center(
-                                  child: Text('No Food Makers Available'),
+                                  child: Text(
+                                      'No Food Makers Available Near By You'),
                                 )
                               : GridView.builder(
                                   itemCount: makerList.length,

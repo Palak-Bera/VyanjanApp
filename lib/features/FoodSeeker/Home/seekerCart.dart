@@ -21,7 +21,7 @@ class _SeekerCartState extends State<SeekerCart> {
 
   Future<bool> _onWillPop() async {
     Navigator.popUntil(context, ModalRoute.withName(seekerHomeRoute));
-    return true;
+    return false;
   }
 
   @override
