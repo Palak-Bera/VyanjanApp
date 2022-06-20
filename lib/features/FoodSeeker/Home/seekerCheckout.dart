@@ -30,8 +30,8 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
   List<Widget> _stepWidgets = [Text('a'), Text('b'), Text('c')];
 
   late String makerContact;
-  late String makerAddress;
-  String paymentMode = "";
+  String makerAddress = '';
+  // String paymentMode = "";
 
   int currentStep = 0;
 
@@ -41,13 +41,15 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
 
   late String token;
 
+  bool loading = true;
+
   @override
   void initState() {
     super.initState();
 
     getAddress();
     getMakerDetails();
-    print('paymentMode: ' + paymentMode);
+    // print('paymentMode: ' + paymentMode);
 
     razorpay = new Razorpay();
 
@@ -70,10 +72,11 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         .forEach((element) {
       element.docs.forEach((element) {
         setState(() {
+          makerAddress = element.get('address');
           makerContact = element.get('phoneNo');
           makerAccDetails = element.get('accountDetails');
           token = element.get('deviceToken');
-          makerAddress = element.get('address');
+          loading = false;
         });
       });
       checkOrderStatus();
@@ -89,7 +92,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
       makerRealtimeRef.child(makerContact).child(orderID).update({
         'paymentStatus': true,
         'deliveryMode': widget.deliveryMode,
-        'paymentMode': paymentMode,
+        // 'paymentMode': paymentMode,
       });
     });
     Fluttertoast.showToast(msg: 'Success').then((value) {
@@ -155,7 +158,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         ? ((cart.getTotalAmount() * 100) + 50 * 100)
         : cart.getTotalAmount() * 100;
     print('Payout amt: ' + amt.toString());
-    print('Payout amt: ' + (amt * 0.8).toString());
+    print('Payout amt: ' + (amt * 0.85).toString());
 
     var apiKey = 'rzp_test_QsDMPb9jLx9EbE';
     var secret = 'mZk44Ei1HtdmkqE3KxlMC5zz';
@@ -169,7 +172,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     var data = {
       "account_number": "2323230076571783",
       "fund_account_id": makerAccDetails['fundAcc_id'],
-      "amount": (amt * 0.8).toInt(),
+      "amount": (amt * 0.85).toInt(),
       "currency": "INR",
       "mode": "IMPS",
       "purpose": "payout",
@@ -323,6 +326,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         height10,
         widget.deliveryMode == "Takeaway"
             ? TextFormField(
+                enabled: false,
                 initialValue: makerAddress,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
@@ -356,7 +360,7 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
     );
 
     _stepWidgets[1] = CircularCountDownTimer(
-      duration: 120,
+      duration: 90,
       controller: _countDownController,
       width: 100,
       height: 150,
@@ -387,61 +391,61 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
 
     _stepWidgets[2] = Column(
       children: [
-        Row(
-          children: [
-            Radio(
-              value: "Cash on Delivery",
-              groupValue: paymentMode,
-              onChanged: (value) {
-                paymentMode = value.toString();
-                setState(() {});
-              },
-              activeColor: primaryGreen,
-            ),
-            CustomText(text: "Cash on Delivery"),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: new Container(
-                margin: const EdgeInsets.only(left: 10.0, right: 15.0),
-                child: Divider(
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            Text(
-              "OR",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13.0,
-                  color: primaryGreen),
-            ),
-            Expanded(
-              child: new Container(
-                margin: const EdgeInsets.only(left: 15.0, right: 10.0),
-                child: Divider(
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Radio(
-              value: "Online Mode",
-              groupValue: paymentMode,
-              onChanged: (value) {
-                paymentMode = value.toString();
-                setState(() {});
-              },
-              activeColor: primaryGreen,
-            ),
-            CustomText(text: "Online Mode"),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     Radio(
+        //       value: "Cash on Delivery",
+        //       groupValue: paymentMode,
+        //       onChanged: (value) {
+        //         paymentMode = value.toString();
+        //         setState(() {});
+        //       },
+        //       activeColor: primaryGreen,
+        //     ),
+        //     CustomText(text: "Cash on Delivery"),
+        //   ],
+        // ),
+        // Row(
+        //   children: <Widget>[
+        //     Expanded(
+        //       child: new Container(
+        //         margin: const EdgeInsets.only(left: 10.0, right: 15.0),
+        //         child: Divider(
+        //           color: Colors.grey,
+        //         ),
+        //       ),
+        //     ),
+        //     Text(
+        //       "OR",
+        //       style: TextStyle(
+        //           fontWeight: FontWeight.bold,
+        //           fontSize: 13.0,
+        //           color: primaryGreen),
+        //     ),
+        //     Expanded(
+        //       child: new Container(
+        //         margin: const EdgeInsets.only(left: 15.0, right: 10.0),
+        //         child: Divider(
+        //           color: Colors.grey,
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // Row(
+        //   children: [
+        //     Radio(
+        //       value: "Online Mode",
+        //       groupValue: paymentMode,
+        //       onChanged: (value) {
+        //         paymentMode = value.toString();
+        //         setState(() {});
+        //       },
+        //       activeColor: primaryGreen,
+        //     ),
+        //     CustomText(text: "Online Mode"),
+        //   ],
+        // ),
         // Container(
         //   child: MaterialButton(
         //     textColor: white,
@@ -459,6 +463,16 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         //     child: Text('Pay ₹ ' + cart.getTotalAmount().toString()),
         //   ),
         // ),
+        Container(
+          child: MaterialButton(
+            textColor: white,
+            color: primaryGreen,
+            onPressed: () {
+              razorpayCreateOrder();
+            },
+            child: Text('Pay ₹ ' + cart.getTotalAmount().toString()),
+          ),
+        ),
       ],
     );
 
@@ -474,18 +488,21 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         backgroundColor: white,
       ),
       body: SafeArea(
-        child: OrientationBuilder(
-          builder: (BuildContext context, Orientation orientation) {
-            return _buildStepper(StepperType.vertical, _stepWidgets);
-          },
-        ),
+        child: loading
+            ? Center(child: CircularProgressIndicator())
+            : OrientationBuilder(
+                builder: (BuildContext context, Orientation orientation) {
+                  return _buildStepper(StepperType.vertical, _stepWidgets);
+                },
+              ),
       ),
     );
   }
 
   CupertinoStepper _buildStepper(StepperType type, List<Widget> _stepWidgets) {
     final canCancel = currentStep < 2;
-    final canContinue = paymentMode == "" ? currentStep < 2 : currentStep < 3;
+    // final canContinue = paymentMode == "" ? currentStep < 2 : currentStep < 3;
+    final canContinue = currentStep < 1;
 
     return CupertinoStepper(
       type: type,
@@ -508,17 +525,22 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
             }
           : canContinue
               ? () {
+                  // if (currentStep == 2) {
+                  //   if (paymentMode == "Online Mode") {
+                  //     razorpayCreateOrder();
+                  //   } else {
+                  //     Fluttertoast.showToast(msg: 'Order Placed Successfully')
+                  //         .then((value) {
+                  //       cart.cartItem.clear();
+                  //       Navigator.pushNamedAndRemoveUntil(
+                  //           context, seekerHomeRoute, (route) => false);
+                  //     });
+                  //   }
+                  // } else {
+                  //   setState(() => ++currentStep);
+                  // }
                   if (currentStep == 2) {
-                    if (paymentMode == "Online Mode") {
-                      razorpayCreateOrder();
-                    } else {
-                      Fluttertoast.showToast(msg: 'Order Placed Successfully')
-                          .then((value) {
-                        cart.cartItem.clear();
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, seekerHomeRoute, (route) => false);
-                      });
-                    }
+                    razorpayCreateOrder();
                   } else {
                     setState(() => ++currentStep);
                   }
@@ -553,9 +575,5 @@ class _SeekerCheckoutState extends State<SeekerCheckout> {
         child: body,
       ),
     );
-  }
-
-  navigate() {
-    Navigator.pushNamed(context, notificationBannerRoute);
   }
 }
