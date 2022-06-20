@@ -147,19 +147,67 @@ class _MakerRecipeState extends State<MakerRecipe> {
                   } else {
                     return ListView(
                       children: snapshot.data!.docs.map((document) {
-                        return ListTile(
-                          title: CustomText(
-                            text: document['name'],
-                            softwrap: true,
+                        return Dismissible(
+                          key: Key(document['name']),
+                          direction: DismissDirection.startToEnd,
+                          background: Container(
+                            child: Center(
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.delete,
+                                  color: white,
+                                ),
+                              ),
+                            ),
+                            color: Colors.red,
                           ),
-                          subtitle: CustomText(
-                            text: document['description'],
-                            color: grey,
-                            softwrap: true,
-                          ),
-                          trailing: CustomText(
-                            text: "₹ " + document['price'],
-                            color: primaryGreen,
+                          onDismissed: (dir) {
+                            String dishName = document['name'];
+                            String description = document['description'];
+                            String price = document['price'];
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                action: SnackBarAction(
+                                  onPressed: () {
+                                    makerRef
+                                        .doc(auth.currentUser!.phoneNumber)
+                                        .collection('menu')
+                                        .doc(dishName)
+                                        .set({
+                                      'name': dishName,
+                                      'description': description,
+                                      'price': price,
+                                    });
+                                  },
+                                  label: 'undo',
+                                ),
+                                content: Text(
+                                  dishName + ' Deleted',
+                                  style: TextStyle(color: white),
+                                ),
+                              ),
+                            );
+                            print('done');
+                            makerRef
+                                .doc(auth.currentUser!.phoneNumber)
+                                .collection('menu')
+                                .doc(document['name'])
+                                .delete();
+                          },
+                          child: ListTile(
+                            title: CustomText(
+                              text: document['name'],
+                              softwrap: true,
+                            ),
+                            subtitle: CustomText(
+                              text: document['description'],
+                              color: grey,
+                              softwrap: true,
+                            ),
+                            trailing: CustomText(
+                              text: "₹ " + document['price'],
+                              color: primaryGreen,
+                            ),
                           ),
                         );
                       }).toList(),
@@ -273,12 +321,12 @@ class _MakerRecipeState extends State<MakerRecipe> {
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if ((value!.isEmpty || value == null))
-                                return 'Please Enter Landmark';
+                                return 'Please Enter Price';
                               else
                                 return null;
                             },
                             decoration: InputDecoration(
-                              labelText: 'Price ₹',
+                              labelText: 'Price',
                               labelStyle: TextStyle(color: primaryGreen),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: primaryGreen)),
@@ -302,6 +350,7 @@ class _MakerRecipeState extends State<MakerRecipe> {
                           primary: primaryGreen,
                         ),
                         onPressed: () {
+                          Navigator.of(context).pop();
                           if (_formKey.currentState!.validate()) {
                             makerRef
                                 .doc(auth.currentUser!.phoneNumber)
@@ -313,7 +362,6 @@ class _MakerRecipeState extends State<MakerRecipe> {
                               'price': _priceController.value.text,
                             }).then((value) => {
                                       Fluttertoast.showToast(msg: 'Dish Added'),
-                                      Navigator.of(context).pop(),
                                     });
                           }
                         },
